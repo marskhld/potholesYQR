@@ -1,0 +1,24 @@
+Hello,
+
+Place PHP Code in: /srv/project/php_app
+
+For Django, anything going to the /api will be routed to django. Assumption is Django is running on 127.0.0.1:8000 on the system.
+
+If you have static (/static) webpages for Django place them in /srv/project/django_app/static and Apache Server will host them quicker than Django can.
+
+The working directory for the Django application is /srv/project/django_app
+
+The System service assumes you have a python virtual environment and you are using gunicorn to run your Django application. Location of gunicorn is /srv/project/django_app/venv/bin/gunicorn 
+
+The virtual environment should be installed and setup by you. /srv/project/django_app/venv is the location of the virtual environment.
+
+You will have the ability to start/stop and restart the django_service. You can also check on the status. Just run:
+
+systemctl {start|stop|restart|status} django_project.service
+
+You can check out the service by viewing the file at: /etc/systemd/system/django_project.service.
+
+There is a .env file at the base /srv/project/.env that contains some MySQL information as well as the DJANGO_SECRET_KEY that you should use for your project.
+
+Thank You,
+The System Administrator.
