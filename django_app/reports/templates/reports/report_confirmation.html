@@ -1,0 +1,75 @@
+{% extends "reports/base.html" %}
+{% load static %}
+
+{% block title %}
+  Report Confirmation | Potholes YQR
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/report_confirmation.css' %}">
+{% endblock %}
+
+{% block content %}
+
+  <div class="confirmation-container">
+
+    <div class="confirmation-card">
+
+      <div class="success-icon">✓</div>
+
+      <h1>Report Submitted!</h1>
+
+      <p class="intro">
+        Your pothole report has been received successfully.
+        City staff will review it and update its status as work progresses.
+      </p>
+
+      <div class="divider"></div>
+
+      <section class="info-section">
+
+        <h3>Confirmation Email</h3>
+
+        <p class="email">{{ report.resident.email }}</p>
+
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="info-section">
+
+        <h3>Tracking Number</h3>
+
+        <div class="ticket-number">{{ report.ticket_number }}</div>
+
+        <p class="ticket-note">Save this number to track your report.</p>
+
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="next-steps">
+
+        <h3>What happens next?</h3>
+
+        <ul>
+
+          <li>Your report will be reviewed by City staff.</li>
+
+          <li>The pothole will be prioritized based on severity.</li>
+
+          <li>You can check progress anytime using your tracking number.</li>
+
+        </ul>
+
+      </section>
+
+      <a href="#" class="btn-primary">Track My Report</a>
+
+      <a href="{% url 'submit_report' %}" class="btn-secondary">Submit Another Report</a>
+
+    </div>
+
+  </div>
+
+{% endblock %}

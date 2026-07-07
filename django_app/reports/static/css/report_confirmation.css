@@ -1,0 +1,177 @@
+.confirmation-container {
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+.confirmation-card {
+  width: 100%;
+  max-width: 700px;
+
+  background: #fff;
+
+  border-radius: 18px;
+
+  padding: 48px;
+
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+
+  text-align: center;
+}
+
+.success-icon {
+  width: 90px;
+  height: 90px;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  background: #e8f5e9;
+
+  color: #2e7d32;
+
+  font-size: 48px;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  margin-bottom: 24px;
+}
+
+.confirmation-card h1 {
+  margin-bottom: 18px;
+
+  font-size: 2.2rem;
+
+  color: #1f2937;
+}
+
+.intro {
+  color: #4b5563;
+
+  line-height: 1.7;
+
+  max-width: 520px;
+
+  margin: auto;
+}
+
+.divider {
+  margin: 35px 0;
+
+  border-top: 1px solid #e5e7eb;
+}
+
+.info-section h3 {
+  font-size: 0.95rem;
+
+  text-transform: uppercase;
+
+  letter-spacing: 1px;
+
+  color: #6b7280;
+
+  margin-bottom: 10px;
+}
+
+.email {
+  font-size: 1.1rem;
+
+  color: #2563eb;
+
+  font-weight: 600;
+}
+
+.ticket-number {
+  font-size: 2.4rem;
+
+  font-weight: 700;
+
+  color: #1565c0;
+
+  letter-spacing: 1px;
+
+  margin: 12px 0;
+}
+
+.ticket-note {
+  color: #6b7280;
+}
+
+.next-steps {
+  text-align: left;
+
+  max-width: 470px;
+
+  margin: 0 auto 40px;
+}
+
+.next-steps h3 {
+  text-align: center;
+
+  margin-bottom: 18px;
+
+  color: #374151;
+}
+
+.next-steps ul {
+  padding-left: 20px;
+
+  color: #4b5563;
+
+  line-height: 1.8;
+}
+
+.btn-primary {
+  display: block;
+
+  width: 100%;
+
+  background: #2563eb;
+
+  color: white;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  text-decoration: none;
+
+  font-weight: 600;
+
+  margin-bottom: 16px;
+
+  transition: 0.2s;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.btn-secondary {
+  display: block;
+
+  width: 100%;
+
+  padding: 15px;
+
+  border-radius: 10px;
+
+  border: 2px solid #d1d5db;
+
+  color: #374151;
+
+  text-decoration: none;
+
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.btn-secondary:hover {
+  background: #f3f4f6;
+}

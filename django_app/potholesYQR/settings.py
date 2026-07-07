@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'reports',
+    'reports', # added reports app to installed apps
 ]
 
 MIDDLEWARE = [
@@ -78,12 +78,6 @@ WSGI_APPLICATION = 'potholesYQR.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
 # DATABASES = { # for server deployment (MySQL)
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -137,3 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" # for development purposes only
+    # email will be printed in terminal instead of being sent. For production, use SMTP backend and configure email settings in .env file.
