@@ -1,0 +1,67 @@
+/* font */
+body {
+  font-family: "Inter", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+h1 {
+    font-weight: 700;
+}
+
+h2 {
+    font-weight: 700;
+}
+
+label {
+    font-weight: 600;
+}
+
+/* header styling */
+header {
+  background: #d35400;
+  color: white;
+  padding: 26px 40px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-logo {
+  width: 72px;
+  height: 72px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.header-text h1 {
+  margin: 0;
+}
+
+.header-text p {
+  margin: 8px 0 0;
+}
+
+/* footer */
+footer {
+  margin-top: 60px;
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+}
+
