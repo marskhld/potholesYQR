@@ -14,7 +14,7 @@ def generate_ticket(): # function to generate ticket numbers for pothole reports
 class Resident(models.Model): # Resident model to store information about residents reporting potholes
     name = models.CharField(max_length=100)
     email = models.EmailField() # validates proper email format
-    phone = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20)
 
 class Staff(models.Model): # stores staff profile info
     username = models.CharField(max_length=50, unique=True) # ensures all staff usernames are unique
@@ -32,6 +32,8 @@ class PotholeReport(models.Model): # model for storing pothole report informatio
     ]
     resident = models.ForeignKey(Resident, on_delete=models.CASCADE) # links each report to a specific resident, via foreign key relationship
                                             # on_delete=models.CASCADE means if resident is deleted, then their reports are deleted
+    address = models.CharField(max_length=255) # address of the pothole, to display to staff and for geocoding to get coordinates
+        # TODO: add to class diagram
     latitude = models.DecimalField(max_digits=9, decimal_places=6) # map coordinates for the pothole location, with 6 decimal places for precision
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     description = models.TextField()
