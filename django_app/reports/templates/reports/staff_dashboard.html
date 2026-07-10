@@ -1,0 +1,135 @@
+{# Use the same shared layout Maria used #}
+{% extends "reports/base.html" %}
+
+{# Load static files like CSS #}
+{% load static %}
+
+{# Browser tab title #}
+{% block title %}
+  Staff Dashboard | Potholes YQR
+{% endblock title %}
+
+{# Dashboard-specific CSS file #}
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/staff_dashboard.css' %}">
+{% endblock extra_css %}
+
+{# Header title from base.html #}
+{% block header_title %}
+  Staff Dashboard
+{% endblock header_title %}
+
+{# Header subtitle from base.html #}
+{% block header_subtitle %}
+  Review submitted pothole reports and manage their progress.
+{% endblock header_subtitle %}
+
+{# Main page content #}
+{% block content %}
+
+  <section class="dashboard-container">
+
+    <div class="dashboard-top">
+
+      <div>
+        <h2>Submitted Pothole Reports</h2>
+
+        <p class="dashboard-note">
+          Staff can review resident-submitted reports, check ticket numbers,
+          verify report details, and update report status later.
+        </p>
+      </div>
+
+      <a href="{% url 'staff_logout' %}" class="logout-link">
+        Logout
+      </a>
+
+    </div>
+
+    <div class="summary-cards">
+
+      <div class="summary-card">
+        <h3>Total Reports</h3>
+        <p>{{ total_reports }}</p>
+      </div>
+
+    </div>
+
+    <div class="table-card">
+
+      <table class="reports-table">
+
+        <thead>
+          <tr>
+            <th>Ticket Number</th>
+            <th>Resident Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Status</th>
+            <th>Date Submitted</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          {% for report in reports %}
+            <tr>
+
+              <td>
+                <strong>{{ report.ticket_number }}</strong>
+              </td>
+
+              <td>
+                {{ report.resident.name }}
+              </td>
+
+              <td>
+                {{ report.resident.email }}
+              </td>
+
+              <td>
+                {{ report.resident.phone_number }}
+              </td>
+
+              <td>
+                {{ report.address }}
+              </td>
+
+              <td>
+                {% if report.current_status %}
+                    <span class="status-badge">
+                        {{ report.get_current_status_display }}
+                    </span>
+                {% else %}
+                     <span class="status-badge pending">
+                         Pending Review
+                     </span>
+                {% endif %}
+              </td>
+
+              <td>
+                {{ report.created_date|date:"M d, Y h:i A" }}
+              </td>
+
+            </tr>
+
+          {% empty %}
+
+            <tr>
+              <td colspan="7" class="empty-message">
+                No pothole reports have been submitted yet.
+              </td>
+            </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </section>
+
+{% endblock content %}
