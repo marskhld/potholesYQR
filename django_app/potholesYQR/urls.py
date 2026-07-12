@@ -16,7 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from reports import views  
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('map/', views.map_view, name='map'),
+    path('api/potholes/', views.pothole_data, name='pothole_data'),
 ]
+
