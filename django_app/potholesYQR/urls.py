@@ -1,3 +1,15 @@
+# .py comment
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        urls.py
+# Description: Direct browser to correct location (project-level)
+# 
+# Authors:
+#     Maria Khalid
+#     Opinder Kaur
+#     Dakshkumar Patel
+#     Christopher Taylor
+ 
 """
 URL configuration for potholesYQR project.
 
@@ -18,22 +30,23 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+#from django.urls import path
 from reports import views  
+from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('map/', views.map_view, name='map'),
     path('api/potholes/', views.pothole_data, name='pothole_data'),
-]
-
-from django.urls import include, path
-
-urlpatterns = [
-    path("admin/", admin.site.urls),
     path("", include("reports.urls")),  # URLs for reports app - for development side
     path("api/", include("reports.urls")),  # URLs for reports app - for production side
 ]
+
+# urlpatterns = [
+#     path("admin/", admin.site.urls),
+#     path("", include("reports.urls")),  # URLs for reports app - for development side
+#     path("api/", include("reports.urls")),  # URLs for reports app - for production side
+# ]
 
 urlpatterns += static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
