@@ -1,0 +1,110 @@
+{% extends "reports/base.html" %}
+{% load static %}
+
+{% block title %}
+  {# browser tab name #}
+  Pothole Report Form | Potholes YQR
+{% endblock %}
+
+{% block extra_css %}
+  {# link specifc stylesheets #}
+  <link rel="stylesheet" href="{% static "css/submit_report.css" %}">
+{% endblock %}
+
+{% block header_title %}
+  {# heading on webpage #}
+  Pothole Report Form
+{% endblock %}
+
+
+{% block header_subtitle %}
+
+  Help us keep our roads safe by reporting potholes in your area.
+{% endblock %}
+
+
+{% block content %}
+  {# main body #}
+
+  <form method="post" enctype="multipart/form-data">
+
+    <p class="form-note">
+      Fields marked with * are required.
+      <p>
+
+        {% csrf_token %}
+        {% if resident_form.errors or report_form.errors %}
+          <div class="error-summary">Please correct the errors below.</div>
+        {% endif %}
+
+        <h2>Your Contact Info</h2>
+
+        <div class="form-group">
+          <label for="{{ resident_form.name.id_for_label }}">Name</label>
+          {{ resident_form.name }} {% if resident_form.name.errors %}
+          <div class="error-message">{{ resident_form.name.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="form-group">
+        <label for="{{ resident_form.email.id_for_label }}">
+          Email <span class="required">*</span>
+        </label>
+        {{ resident_form.email }} {% if resident_form.email.errors %}
+        <div class="error-message">{{ resident_form.email.errors.0 }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="{{ resident_form.phone_number.id_for_label }}">
+        Phone Number <span class="required">*</span>
+      </label>
+      {{ resident_form.phone_number }} {% if resident_form.phone_number.errors %}
+      <div class="error-message">{{ resident_form.phone_number.errors.0 }}</div>
+    {% endif %}
+  </div>
+
+  <h2>Pothole Report Details</h2>
+
+  <div class="form-group">
+    <label for="{{ report_form.address.id_for_label }}">
+      Address <span class="required">*</span>
+    </label>
+    {{ report_form.address }} {% if report_form.address.errors %}
+    <div class="error-message">{{ report_form.address.errors.0 }}</div>
+  {% endif %}
+</div>
+
+<div class="form-group">
+  <label for="{{ report_form.description.id_for_label }}">Description</label>
+  <p class="help-text">
+    Provide any helpful details such as pothole size, nearby landmarks, or
+    potential hazards.
+  </p>
+  {{ report_form.description }} {% if report_form.description.errors %}
+  <div class="error-message">{{ report_form.description.errors.0 }}</div>
+{% endif %}
+</div>
+
+<div class="form-group">
+  <label for="{{ report_form.photos.id_for_label }}">Photos</label>
+  <p class="help-text">
+    Upload one or more photos (optional). Accepted: JPG, PNG, GIF
+    <br />
+    Maximum size: 10 MB each.
+  </p>
+  {{ report_form.photos }} {% if report_form.photos.errors %}
+  <div class="error-message">{{ report_form.photos.errors.0 }}</div>
+{% endif %}
+</div>
+
+<div id="photo-list"></div>
+<button type="submit">Submit Report</button>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/phone_formatter.js' %}"></script>
+  <script src="{% static 'js/photo_upload.js' %}"></script>
+  <script src="{% static 'js/form_validation.js' %}"></script>
+{% endblock extra_js %}

@@ -14,6 +14,9 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from reports import views  
@@ -24,3 +27,14 @@ urlpatterns = [
     path('api/potholes/', views.pothole_data, name='pothole_data'),
 ]
 
+from django.urls import include, path
+
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", include("reports.urls")),  # URLs for reports app - for development side
+    path("api/", include("reports.urls")),  # URLs for reports app - for production side
+]
+
+urlpatterns += static(
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+)  # Serve media files during development
