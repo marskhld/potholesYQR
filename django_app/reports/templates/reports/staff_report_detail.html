@@ -1,0 +1,401 @@
+{# Reuse the common Potholes YQR page structure #}
+{% extends "reports/base.html" %}
+
+{# Allow this template to load its page-specific CSS #}
+{% load static %}
+
+
+{# Browser tab title #}
+{% block title %}
+  Report {{ report.ticket_number }} | Potholes YQR
+{% endblock title %}
+
+
+{# Load styling only for the staff report detail page #}
+{% block extra_css %}
+  <link
+    rel="stylesheet"
+    href="{% static 'css/staff_report_detail.css' %}"
+  >
+{% endblock extra_css %}
+
+
+{# Shared header title from base.html #}
+{% block header_title %}
+  Staff Report Detail
+{% endblock header_title %}
+
+
+{# Shared header subtitle from base.html #}
+{% block header_subtitle %}
+  Review the complete report, validate its details, and update its progress.
+{% endblock header_subtitle %}
+
+
+{# Main page content #}
+{% block content %}
+
+  {# Main page wrapper #}
+  <section class="detail-container">
+
+    {# Navigation and signed-in staff information #}
+    <div class="detail-navigation">
+
+      {# Return to the staff dashboard report list #}
+      <a
+        href="{% url 'staff_dashboard' %}"
+        class="back-link"
+      >
+        ← Back to Dashboard
+      </a>
+
+      {# Show the currently authenticated staff username #}
+      <span class="staff-user">
+        Signed in as {{ request.user.username }}
+      </span>
+
+    </div>
+
+
+    {# Ticket number and current status heading #}
+    <div class="report-heading">
+
+      {# Selected report ticket number #}
+      <h2>
+        Report {{ report.ticket_number }}
+      </h2>
+
+      {# Human-readable current status #}
+      <span class="status-badge status-{{ report.current_status }}">
+        {{ report.get_current_status_display }}
+      </span>
+
+    </div>
+
+
+    {# Show confirmation after the report is successfully updated #}
+    {% if update_success %}
+      <div class="success-message">
+        Report changes were saved successfully.
+      </div>
+    {% endif %}
+
+
+    {# Show a server-side validation error #}
+    {% if update_error %}
+      <div class="error-summary">
+        {{ update_error }}
+      </div>
+    {% endif %}
+
+
+    {# Two-column layout: submitted details and editable staff fields #}
+    <div class="detail-grid">
+
+      {# Left card: information submitted by the resident #}
+      <article class="detail-card">
+
+        <h3>Submitted Report Details</h3>
+
+        {# Display report information using label/value pairs #}
+        <dl class="report-information">
+
+          <dt>Resident Name</dt>
+          <dd>{{ report.resident.name }}</dd>
+
+          <dt>Email</dt>
+          <dd>{{ report.resident.email }}</dd>
+
+          <dt>Phone Number</dt>
+          <dd>{{ report.resident.phone_number }}</dd>
+
+          <dt>Address</dt>
+          <dd>{{ report.address }}</dd>
+
+          <dt>Description</dt>
+          <dd>
+            {{ report.description|default:"No description was provided." }}
+          </dd>
+
+          <dt>Severity</dt>
+          <dd>{{ report.get_severity_display }}</dd>
+
+          <dt>Date Submitted</dt>
+          <dd>
+            {{ report.created_date|date:"M d, Y h:i A" }}
+          </dd>
+
+          <dt>Last Updated</dt>
+          <dd>
+            {{ report.updated_date|date:"M d, Y h:i A" }}
+          </dd>
+
+          <dt>Latitude</dt>
+          <dd>{{ report.latitude }}</dd>
+
+          <dt>Longitude</dt>
+          <dd>{{ report.longitude }}</dd>
+
+        </dl>
+
+
+        {# Photo evidence section #}
+        <section class="photo-section">
+
+          <h3>Submitted Photos</h3>
+
+          <div class="photo-grid">
+
+            {# Photo uses Django's automatic reverse relation: photo_set #}
+            {% for photo in report.photo_set.all %}
+
+              {# Open the original image in a new tab #}
+              <a
+                href="{{ photo.file_path.url }}"
+                target="_blank"
+                rel="noopener"
+                class="photo-link"
+              >
+
+                <img
+                  src="{{ photo.file_path.url }}"
+                  alt="Pothole evidence for {{ report.ticket_number }}"
+                  class="report-photo"
+                >
+
+              </a>
+
+            {% empty %}
+
+              <p class="empty-message">
+                No photos were uploaded for this report.
+              </p>
+
+            {% endfor %}
+
+          </div>
+
+        </section>
+
+      </article>
+
+
+      {# Right card: fields that staff are allowed to update #}
+      <article class="detail-card">
+
+        <h3>Review and Update Report</h3>
+
+        {# Submit changes back to the same Django detail view #}
+        <form method="post" class="update-form">
+
+          {# Required security token for Django POST forms #}
+          {% csrf_token %}
+
+
+          {# Current status field #}
+          <div class="form-group">
+
+            <label for="current_status">
+              Current Status
+            </label>
+
+            <select
+              id="current_status"
+              name="current_status"
+              class="form-control"
+              required
+            >
+
+              {# Choices come from PotholeReport.STATUS_CHOICES #}
+              {% for value, label in status_choices %}
+
+                <option
+                  value="{{ value }}"
+                  {% if report.current_status == value %}selected{% endif %}
+                >
+                  {{ label }}
+                </option>
+
+              {% endfor %}
+
+            </select>
+
+          </div>
+
+
+          {# Severity field #}
+          <div class="form-group">
+
+            <label for="severity">
+              Severity
+            </label>
+
+            <select
+              id="severity"
+              name="severity"
+              class="form-control"
+              required
+            >
+
+              {# Choices come from the severity model field #}
+              {% for value, label in severity_choices %}
+
+                <option
+                  value="{{ value }}"
+                  {% if report.severity == value %}selected{% endif %}
+                >
+                  {{ label }}
+                </option>
+
+              {% endfor %}
+
+            </select>
+
+          </div>
+
+
+          {# Internal notes visible only to staff #}
+          <div class="form-group">
+
+            <label for="staff_notes">
+              Internal Staff Notes
+            </label>
+
+            <p class="help-text">
+              These notes are visible only to authorized staff.
+            </p>
+
+            <textarea
+              id="staff_notes"
+              name="staff_notes"
+              class="form-control"
+              rows="6"
+              placeholder="Add investigation, verification, or maintenance notes."
+            >{{ report.staff_notes }}</textarea>
+
+          </div>
+
+
+          {# Public progress or resolution information #}
+          <div class="form-group">
+
+            <label for="public_notes">
+              Public / Resolution Notes
+            </label>
+
+            <p class="help-text">
+              These notes may later be displayed to the resident on the tracking page.
+            </p>
+
+            <textarea
+              id="public_notes"
+              name="public_notes"
+              class="form-control"
+              rows="6"
+              placeholder="Add a resident-visible update or resolution message."
+            >{{ report.public_notes }}</textarea>
+
+          </div>
+
+
+          {# Form buttons #}
+          <div class="form-actions">
+
+            {# Leave without submitting changes #}
+            <a
+              href="{% url 'staff_dashboard' %}"
+              class="btn-secondary"
+            >
+              Cancel
+            </a>
+
+            {# Save updated values to the database #}
+            <button
+              type="submit"
+              class="btn-primary"
+            >
+              Save Changes
+            </button>
+
+          </div>
+
+        </form>
+
+      </article>
+
+    </div>
+
+
+    {# History of staff updates #}
+    <article class="detail-card history-card">
+
+      <h3>Status and Activity History</h3>
+
+      <div class="history-table-wrapper">
+
+        <table class="history-table">
+
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Updated By</th>
+              <th>Internal Notes</th>
+              <th>Public Notes</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            {# Display all StatusHistory records supplied by views.py #}
+            {% for entry in status_history %}
+
+              <tr>
+
+                <td>
+                  {{ entry.changed_at|date:"M d, Y h:i A" }}
+                </td>
+
+                <td>
+                  {{ entry.display_status }}
+                </td>
+
+                <td>
+                  {% if entry.changed_by %}
+                    {{ entry.changed_by.name }}
+                  {% else %}
+                    Unknown
+                  {% endif %}
+                </td>
+
+                <td>
+                  {{ entry.staff_notes|default:"—" }}
+                </td>
+
+                <td>
+                  {{ entry.public_notes|default:"—" }}
+                </td>
+
+              </tr>
+
+            {% empty %}
+
+              <tr>
+                <td colspan="5" class="empty-history-message">
+                  No staff updates have been recorded yet.
+                </td>
+              </tr>
+
+            {% endfor %}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </article>
+
+  </section>
+
+{% endblock content %}

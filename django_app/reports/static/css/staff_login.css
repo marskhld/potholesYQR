@@ -1,9 +1,11 @@
 /* Centers the staff login card on the page */
 .staff-login-container {
+  min-height: calc(100vh - 250px);
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 48px 16px;
+  padding: 32px 16px;
+  box-sizing: border-box;
 }
 
 /* White login card */
@@ -13,6 +15,7 @@
   background: #ffffff;
   border-radius: 14px;
   padding: 32px;
+  box-sizing: border-box;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
 }
 
@@ -53,6 +56,7 @@
   border-radius: 8px;
   font-size: 15px;
   font-family: "Inter", sans-serif;
+  box-sizing:border-box
 }
 
 /* Input styling when clicked */
@@ -73,6 +77,7 @@
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
+  box-sizing:border-box;
 }
 
 /* Login button hover effect */

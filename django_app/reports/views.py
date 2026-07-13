@@ -1,20 +1,35 @@
-from django.shortcuts import render, redirect, get_object_or_404 # Used to check username and password for staff login -DP 
-from .utils import geocode_address
-from .forms import ResidentForm, PotholeReportForm
-from .models import Resident, PotholeReport, Photo
+
+
+# Django shortcuts for loading pages, redirecting, and finding objects
+from django.shortcuts import render, redirect, get_object_or_404
+
+# Used to generate named URLs
+from django.urls import reverse
+
+# Used to send resident confirmation emails
 from django.core.mail import send_mail
+
+# Used to keep related database operations together
 from django.db import transaction
 
-from django.contrib.auth import authenticate
+# Django authentication functions
+from django.contrib.auth import authenticate, login, logout
 
-# Used to log in staff users after successful authentication
-from django.contrib.auth import login
-
-# Used to log out staff users
-from django.contrib.auth import logout
-
-# Used to protect staff dashboard so only logged-in users can access it
+# Protects staff pages from unauthenticated access
 from django.contrib.auth.decorators import login_required
+
+# Project utility and forms
+from .utils import geocode_address
+from .forms import ResidentForm, PotholeReportForm
+
+# Database models used by resident and staff pages
+from .models import (
+    Resident,
+    Staff,
+    PotholeReport,
+    Photo,
+    StatusHistory,
+)
 
 # Create your views here.
 def submit_report(request):
@@ -127,7 +142,7 @@ def staff_dashboard(request):
     # Get all submitted pothole reports from the database
     # select_related("resident") also fetches resident details with each report
     # order_by("-created_date") shows the newest submitted report first
-    reports = PotholeReport.objects.select_related("resident").all().order_by("-created_date")
+    reports = PotholeReport.objects.select_related("resident").order_by("-created_date")
 
     # Count total number of submitted pothole reports
     total_reports = reports.count()
@@ -144,6 +159,193 @@ def staff_dashboard(request):
 
     # Load staff_dashboard.html and pass report data to it
     return render(request, "reports/staff_dashboard.html", context)
+
+
+# Staff report detail page
+# Only authenticated staff users can open and update a report
+@login_required(login_url="staff_login")
+def staff_report_detail(request, ticket):
+
+    # Prevent authenticated non-staff users from accessing the page
+    if not request.user.is_staff:
+        return redirect("staff_login")
+
+    # Find one report using its unique ticket number
+    # select_related gets the connected resident efficiently
+    # prefetch_related gets the connected photos efficiently
+    report = get_object_or_404(
+        PotholeReport.objects
+        .select_related("resident")
+        .prefetch_related("photo_set"),
+        ticket_number=ticket,
+    )
+
+    # Get allowed status options from the model
+    status_choices = PotholeReport.STATUS_CHOICES
+
+    # Get allowed severity options from the severity field
+    severity_choices = (
+        PotholeReport
+        ._meta
+        .get_field("severity")
+        .choices
+    )
+
+    # Create sets of valid database values for validation
+    valid_statuses = {
+        value for value, _ in status_choices
+    }
+
+    valid_severities = {
+        value for value, _ in severity_choices
+    }
+
+    # No error is shown when the page first opens
+    update_error = None
+
+    # Process the form when staff clicks Save Changes
+    if request.method == "POST":
+
+        # Get the selected status from the form
+        new_status = request.POST.get(
+            "current_status",
+            report.current_status,
+        )
+
+        # Get the selected severity from the form
+        new_severity = request.POST.get(
+            "severity",
+            report.severity,
+        )
+
+        # Get and clean the internal staff notes
+        new_staff_notes = request.POST.get(
+            "staff_notes",
+            "",
+        ).strip()
+
+        # Get and clean the public/resolution notes
+        new_public_notes = request.POST.get(
+            "public_notes",
+            "",
+        ).strip()
+
+        # Check whether the submitted status is valid
+        if new_status not in valid_statuses:
+            update_error = "The selected report status is invalid."
+
+        # Check whether the submitted severity is valid
+        elif new_severity not in valid_severities:
+            update_error = "The selected severity is invalid."
+
+        # Continue when all submitted values are valid
+        else:
+
+            # Store the previous values before updating the report
+            old_status = report.current_status
+            old_severity = report.severity
+            old_staff_notes = report.staff_notes
+            old_public_notes = report.public_notes
+
+            # Check whether staff changed anything
+            changes_made = (
+                old_status != new_status
+                or old_severity != new_severity
+                or old_staff_notes != new_staff_notes
+                or old_public_notes != new_public_notes
+            )
+
+            # Generate the current detail-page URL
+            detail_url = reverse(
+                "staff_report_detail",
+                kwargs={"ticket": report.ticket_number},
+            )
+
+            # Save only if at least one value changed
+            if changes_made:
+
+                # Keep the report update and history record together
+                # If either operation fails, both are cancelled
+                with transaction.atomic():
+
+                    # Update the report status
+                    report.current_status = new_status
+
+                    # Update the report severity
+                    report.severity = new_severity
+
+                    # Update staff-only internal notes
+                    report.staff_notes = new_staff_notes
+
+                    # Update public/resolution notes
+                    report.public_notes = new_public_notes
+
+                    # Save changes to SQLite locally or MySQL on Titan
+                    report.save()
+
+                    # Find or create a Staff profile for the logged-in user
+                    staff_profile, _ = Staff.objects.get_or_create(
+                        username=request.user.username,
+                        defaults={
+                            "name": (
+                                request.user.get_full_name()
+                                or request.user.username
+                            )
+                        },
+                    )
+
+                    # Record the update in StatusHistory
+                    StatusHistory.objects.create(
+                        report=report,
+                        old_status=old_status,
+                        new_status=new_status,
+                        changed_by=staff_profile,
+                        staff_notes=new_staff_notes,
+                        public_notes=new_public_notes,
+                    )
+
+                # Redirect with a success flag
+                # This also prevents duplicate updates after browser refresh
+                return redirect(f"{detail_url}?updated=1")
+
+            # Return to the page without a success message if nothing changed
+            return redirect(detail_url)
+
+    # Load all previous staff updates for this report
+    status_history = (
+        StatusHistory.objects
+        .filter(report=report)
+        .select_related("changed_by")
+        .order_by("-changed_at")
+    )
+
+    # Create a mapping from stored status codes to readable labels
+    status_label_map = dict(PotholeReport.STATUS_CHOICES)
+
+    # Add a readable status label to every history record
+    for entry in status_history:
+        entry.display_status = status_label_map.get(
+            entry.new_status,
+            entry.new_status,
+        )
+
+    # Prepare information for staff_report_detail.html
+    context = {
+        "report": report,
+        "status_choices": status_choices,
+        "severity_choices": severity_choices,
+        "status_history": status_history,
+        "update_error": update_error,
+        "update_success": request.GET.get("updated") == "1",
+    }
+
+    # Display the staff report detail template
+    return render(
+        request,
+        "reports/staff_report_detail.html",
+        context,
+    )
+
 
 # Staff logout function
 def staff_logout(request):

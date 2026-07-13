@@ -24,6 +24,13 @@
   Review submitted pothole reports and manage their progress.
 {% endblock header_subtitle %}
 
+{% block header_actions %}
+  <a href="{% url 'staff_logout' %}" class="header-logout-link">
+    Logout
+  </a>
+{% endblock header_actions %}
+
+
 {# Main page content #}
 {% block content %}
 
@@ -39,10 +46,6 @@
           verify report details, and update report status later.
         </p>
       </div>
-
-      <a href="{% url 'staff_logout' %}" class="logout-link">
-        Logout
-      </a>
 
     </div>
 
@@ -77,7 +80,13 @@
             <tr>
 
               <td>
-                <strong>{{ report.ticket_number }}</strong>
+                {# Open the full report detail page using the ticket number #}
+                    <a
+                      href="{% url 'staff_report_detail' report.ticket_number %}"
+                      class="ticket-link"
+                    >
+                      {{ report.ticket_number }}
+                    </a>
               </td>
 
               <td>
@@ -96,17 +105,11 @@
                 {{ report.address }}
               </td>
 
-              <td>
-                {% if report.current_status %}
-                    <span class="status-badge">
-                        {{ report.get_current_status_display }}
-                    </span>
-                {% else %}
-                     <span class="status-badge pending">
-                         Pending Review
-                     </span>
-                {% endif %}
-              </td>
+             <td>
+                  <span class="status-badge status-{{ report.current_status }}">
+                    {{ report.get_current_status_display }}
+                  </span>
+                </td>
 
               <td>
                 {{ report.created_date|date:"M d, Y h:i A" }}

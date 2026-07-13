@@ -34,18 +34,23 @@ body {
 }
 
 /* Logout button styling */
-.logout-link {
-  background-color: #1976d2;
-  color: white;
+/* Logout button inside the orange header */
+.header-logout-link {
+  display: inline-block;
+  background-color: white;
+  color: #d65300;
+  padding: 10px 18px;
+  border: 2px solid white;
+  border-radius: 6px;
+  font-weight: 700;
   text-decoration: none;
-  padding: 12px 18px;
-  border-radius: 5px;
-  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* Logout hover effect */
-.logout-link:hover {
-  background-color: #1565c0;
+/* Logout button hover effect */
+.header-logout-link:hover {
+  background-color: transparent;
+  color: white;
 }
 
 /* Wrapper for dashboard summary cards */
@@ -114,20 +119,50 @@ body {
 }
 
 /* Default status badge style */
+/* Shared style for all status badges */
 .status-badge {
   display: inline-block;
-  background: #e3f2fd;
-  color: #1565c0;
   padding: 6px 10px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
-/* Pending review badge style */
-.status-badge.pending {
-  background: #fff3cd;
+/* New status — blue */
+.status-new {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+
+/* Pending status — yellow */
+.status-pending {
+  background-color: #fff3cd;
   color: #856404;
+}
+
+/* Approved status — green */
+.status-approved {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+/* Rejected status — red */
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* In Progress status — orange */
+.status-in_progress {
+  background-color: #ffe5cc;
+  color: #9a4d00;
+}
+
+/* Closed status — grey */
+.status-closed {
+  background-color: #e2e3e5;
+  color: #41464b;
 }
 
 /* Empty table message style */

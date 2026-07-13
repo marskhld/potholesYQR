@@ -20,6 +20,13 @@ urlpatterns = [
     # staff dashboard page after successful login
     # URL: http://127.0.0.1:8000/staff/dashboard/
     path('staff/dashboard/', views.staff_dashboard, name='staff_dashboard'),
+   # Staff detail page for one selected report
+    # Example: /staff/report/YQR-12345678/
+    path(
+        "staff/report/<str:ticket>/",
+        views.staff_report_detail,
+        name="staff_report_detail",
+    ),
 
     # staff logout route
     # URL: http://127.0.0.1:8000/staff/logout/

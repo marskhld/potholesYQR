@@ -21,23 +21,39 @@
 
   <body>
     <header>
-      <div class="header-content">
-        <a href="{% url 'submit_report' %}" class="header-logo">
-          {# TODO: change to 'home' later so logo redirects to home page #}
-          <img src="{% static 'images/potholesYQR-logo.svg' %}"
-               alt="Potholes YQR"
-               class="header-icon" />
-        </a>
+  <div class="header-content">
 
-        <div class="header-text">
-          <h1>{% block header_title %}Potholes YQR{% endblock header_title %}</h1>
-          <p>
-            {% block header_subtitle %}Help us keep our roads safe by reporting
-              potholes.{% endblock header_subtitle %}
-          </p>
-        </div>
-      </div>
-    </header>
+    <a href="{% url 'submit_report' %}" class="header-logo">
+      {# TODO: change to 'home' later so logo redirects to home page #}
+      <img
+        src="{% static 'images/potholesYQR-logo.svg' %}"
+        alt="Potholes YQR"
+        class="header-icon"
+      />
+    </a>
+
+    <div class="header-text">
+      <h1>
+        {% block header_title %}
+          Potholes YQR
+        {% endblock header_title %}
+      </h1>
+
+      <p>
+        {% block header_subtitle %}
+          Help us keep our roads safe by reporting potholes.
+        {% endblock header_subtitle %}
+      </p>
+    </div>
+
+    {# Optional area for buttons such as staff Logout #}
+    <div class="header-actions">
+      {% block header_actions %}
+      {% endblock header_actions %}
+    </div>
+
+  </div>
+</header>
 
     <main>
       {% block content %}{% endblock %}

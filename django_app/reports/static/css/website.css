@@ -1,23 +1,24 @@
-/* font */
+/* Font */
 body {
   font-family: "Inter", sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.5;
+  margin:0;
 }
 
 h1 {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 h2 {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 label {
-    font-weight: 600;
+  font-weight: 600;
 }
 
-/* header styling */
+/* Header styling */
 header {
   background: #d35400;
   color: white;
@@ -28,6 +29,7 @@ header {
   display: flex;
   align-items: center;
   gap: 20px;
+  width: 100%;
 }
 
 .header-logo {
@@ -55,7 +57,13 @@ header {
   margin: 8px 0 0;
 }
 
-/* footer */
+/* Pushes optional header buttons to the right */
+.header-actions {
+  margin-left: auto;
+  padding-left: 20px;
+}
+
+/* Footer */
 footer {
   margin-top: 60px;
   padding: 20px;
@@ -64,4 +72,3 @@ footer {
   border-top: 1px solid #ddd;
   font-size: 14px;
 }
-
