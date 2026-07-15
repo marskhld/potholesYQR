@@ -1,5 +1,6 @@
-from django.db import models # Django's toolkit for defining database tables
-import uuid # generates unique identifiers for ticket numbers
+import uuid  # generates unique identifiers for ticket numbers
+
+from django.db import models  # Django's toolkit for defining database tables
 
 # Create your models here.
 # Note: Django auto-creates id fields for each model, so we don't need to define them manually 
@@ -36,7 +37,7 @@ class PotholeReport(models.Model): # model for storing pothole report informatio
         # TODO: add to class diagram
     latitude = models.DecimalField(max_digits=9, decimal_places=6) # map coordinates for the pothole location, with 6 decimal places for precision
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
-    description = models.TextField()
+    description = models.TextField(max_length=500)
     severity = models.CharField(max_length=20, choices=[('low', 'Low'), ('medium', 'Medium'), ('high', 'High')], default='medium') # severity of pothole, with default value
     current_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new') # TODO: changed the name to status instead of state
     ticket_number = models.CharField(max_length=20, unique=True, default=generate_ticket) # auto-generate ticket number!
