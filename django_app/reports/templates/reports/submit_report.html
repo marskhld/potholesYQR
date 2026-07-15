@@ -91,11 +91,9 @@
 </div>
 
 <div class="form-group">
-  <label for="{{ report_form.photos.id_for_label }}">Photos</label>
+  <label for="{{ report_form.photos.id_for_label }}">Photos (optional)</label>
   <p class="help-text">
-    Upload one or more photos (optional). Accepted: JPG, PNG, GIF
-    <br />
-    Maximum size: 10 MB each.
+    Upload one or more photos to help us understand the issue. Accepted: JPG, PNG, GIF. Maximum size: 12 MB per image.
   </p>
   {{ report_form.photos }} {% if report_form.photos.errors %}
   <div class="error-message">{{ report_form.photos.errors.0 }}</div>
