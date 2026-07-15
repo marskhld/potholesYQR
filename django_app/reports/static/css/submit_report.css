@@ -81,6 +81,7 @@
   border-radius: 5px;
   font-size: 15px;
   box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
 .form-control:focus {
@@ -168,4 +169,14 @@ body {
 
 textarea.form-control {
   border-radius: 6px;
+  resize: vertical;
+}
+
+/* styling for character counter */
+
+.character-counter {
+  text-align: right;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #6c757d;
 }
