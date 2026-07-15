@@ -8,3 +8,5 @@ django_app/venv/
 media/
 logs/
 static/
+.DS_Store
+**/.DS_Store
