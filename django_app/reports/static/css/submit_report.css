@@ -1,3 +1,21 @@
+/*
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        submit_report.css
+# Description: This file controls the pothole report form styling.
+#               
+# Authors:
+#     Maria Khalid
+#     Opinder Kaur
+#     Christopher Taylor
+*/
+
+#report-map {
+    height: 400px;   
+    width: 100%;
+    margin-top: 10px;
+}
+
 /* styling for the photo upload section */
 #photo-list {
   display: flex;

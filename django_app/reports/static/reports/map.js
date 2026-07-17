@@ -1,3 +1,14 @@
+/* 
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        map.js
+# Description: This is a javascript code that uses Leaflet.js to show the pothole map and provides the functionality.
+#              The functions below are based on the code provided by Leaflet.js.
+# Authors:
+#     Opinder Kaur
+#     Christopher Taylor
+*/
+
 const REGINA = [50.4452, -104.6189];
 const map = L.map('map').setView(REGINA, 13);
 

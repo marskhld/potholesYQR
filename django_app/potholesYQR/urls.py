@@ -30,24 +30,23 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-#from django.urls import path
 from reports import views  
 from django.urls import include, path
 
 urlpatterns = [
+    #Admin site
     path('admin/', admin.site.urls),
+
+    #Map and API
     path('map/', views.map_view, name='map'),
     path('api/potholes/', views.pothole_data, name='pothole_data'),
+
+    #Reports app routes
     path("", include("reports.urls")),  # URLs for reports app - for development side
     path("api/", include("reports.urls")),  # URLs for reports app - for production side
 ]
 
-# urlpatterns = [
-#     path("admin/", admin.site.urls),
-#     path("", include("reports.urls")),  # URLs for reports app - for development side
-#     path("api/", include("reports.urls")),  # URLs for reports app - for production side
-# ]
-
+# Serve media files during development
 urlpatterns += static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-)  # Serve media files during development
+)
