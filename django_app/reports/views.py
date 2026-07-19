@@ -7,11 +7,10 @@ def map_view(request):
 
 def pothole_data(request):
     potholes = PotholeReport.objects.all().values(
-        'id', 'latitude', 'longitude', 'description', 'severity', 'current_status'
+        'id', 'ticket_number', 'created_date', 'updated_date', 'latitude', 'longitude', 'address', 'description', 'severity', 'current_status', 'public_notes'
     )
     return JsonResponse(list(potholes), safe=False)
 from django.shortcuts import render, redirect
-
 
 # Django shortcuts for loading pages, redirecting, and finding objects
 from django.shortcuts import render, redirect, get_object_or_404

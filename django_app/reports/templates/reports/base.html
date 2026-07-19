@@ -1,7 +1,7 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% load static %}
     <meta charset="UTF-8" />
     <title>{% block title %}Potholes YQR{% endblock title %}</title>
 
@@ -11,22 +11,25 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet" />
+    
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon"> 
 
     <!-- site-wide styling -->
     <link rel="stylesheet" href="{% static 'css/website.css' %}" />
     <!-- allows for page-specific styling -->
     {% block extra_css %}
     {% endblock extra_css %}
+    
   </head>
 
   <body>
     <header>
   <div class="header-content">
 
-    <a href="{% url 'submit_report' %}" class="header-logo">
+    <a href="{% url 'map' %}" class="header-logo">
       {# TODO: change to 'home' later so logo redirects to home page #}
       <img
-        src="{% static 'images/potholesYQR-logo.svg' %}"
+        src="{% static 'images/potholesYQR.png' %}"
         alt="Potholes YQR"
         class="header-icon"
       />
@@ -59,9 +62,9 @@
       {% block content %}{% endblock %}
     </main>
 
-    <!-- shared site-wide JS -->
+    <!-- shared site-wide JS 
     <script src="{% static 'js/website.js' %}"></script>
-
+    -->
     <!-- page-specific JS -->
     {% block extra_js %}{% endblock %}
 

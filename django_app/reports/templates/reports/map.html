@@ -9,27 +9,46 @@
 #     Christopher Taylor
 -->
 
+{% extends "reports/base.html" %}
+
+{# Load static files like CSS #}
 {% load static %}
-<!DOCTYPE html>
-<html>
 
-<head>
+{# Browser tab title #}
+{% block title %}
+  potholesYQR Pothole Map
+{% endblock title %}
 
+{# Dashboard-specific CSS file #}
+{% block extra_css %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
     <link rel="stylesheet" href="{% static 'reports/map.css' %}">
+    <link rel="stylesheet" href="{% static 'css/submit_report.css' %}">
+    <link rel="stylesheet" href="{% static 'css/staff_dashboard.css' %}">
+    
+{% endblock extra_css %}
 
-</head>
+{# Header title from base.html #}
+{% block header_title %}
+  potholesYQR Pothole Map
+{% endblock header_title %}
 
-<body>
-    <div id="map"></div>
+{# Header subtitle from base.html #}
+{% block header_subtitle %}
+  Review reported potholes
+{% endblock header_subtitle %}
 
+{% block header_actions %}
+    <a href="{% url 'submit_report' %}" class="header-logout-link">Submit Pothole Report</a>
+{% endblock header_actions %}
+
+{# Main page content #}
+{% block content %}
+    <div id="map">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
     <script src="{% static 'reports/map.js' %}"></script>
+    </div>
 
-</body>
-
-</html>
+{% endblock content %}
