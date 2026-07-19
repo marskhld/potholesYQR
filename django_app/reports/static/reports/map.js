@@ -27,6 +27,40 @@ const severityLabels = {
     low: 'Low'
 };
 
+// Reference: https://github.com/pointhi/leaflet-color-markers
+// obtained different coloured markers for different severity  
+const pinSeverityIcons = {
+    high: L.icon({
+        iconUrl: '/static/images/marker-icon-high_red.png',
+        iconRetinaUrl: '/static/images/marker-icon-2x-high_red.png',
+        shadowUrl: '/static/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+     }),
+
+    medium: L.icon({
+        iconUrl: '/static/images/marker-icon-medium_orange.png',
+        iconRetinaUrl: '/static/images/marker-icon-2x-medium_orange.png',
+        shadowUrl: '/static/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    }),
+
+    low: L.icon({
+        iconUrl: '/static/images/marker-icon-low_yellow.png',
+        iconRetinaUrl: '/static/images/marker-icon-2x-low_yellow.png',
+        shadowUrl: '/static/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+     })
+};
+
 L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap France contributors'
 }).addTo(map);
@@ -103,8 +137,13 @@ fetch('/api/potholes/')
 
             // DONE: add 'created_date', 'updated_date',
 
+            // DONE: change pin / marker colour based on severity
+
            if (p.current_status !== 'new' && p.current_status !== 'closed' && p.current_status !== 'rejected') {
-                const marker = L.marker([p.latitude, p.longitude]).addTo(map);
+                // choose marker colour based on severity
+                const markerIcon = pinSeverityIcons[p.severity] || pinSeverityIcons.low;
+                // update marker colour based on severity
+                const marker = L.marker([p.latitude, p.longitude],{ icon: markerIcon }).addTo(map);
                 const severityColour = {};
                 const severityIcon =
                     p.severity === 'high' ? '/static/images/severity_high_red.png' :
