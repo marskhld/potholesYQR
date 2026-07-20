@@ -45,6 +45,35 @@
 
 {# Main page content #}
 {% block content %}
+<!--create the ticket search and pothole report filter controls above the map-->
+    <div class="map-filters">
+        <input type="text"
+            id="potholeSearch"
+            title="Type a Pothole Report Ticket # to locate it on the map"
+            placeholder="Pothole Report Ticket #">
+        <button id="potholeSearchBtn" type="button">Search</button>
+        <label for="map-severity-filter">Severity:</label>
+        <select id="map-severity-filter">
+            <option value="">All</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+        </select>
+        <label for="map-status-filter">Status:</label>
+        <select id="map-status-filter">
+            <option value="">All</option>
+            <option value="approved">Approved</option>
+            <option value="in_progress">In Progress</option>
+            <option value="pending">Pending</option>
+        </select>
+        <label for="map-created-date-filter">Date Range - From:</label>
+        <input type="date" id="map-created-from-date">
+        <label>To:</label>
+        <input type="date" id="map-created-to-date">
+        <button id="map-clear-filters">Clear Filters</button>
+    </div>
+
+    <!--display the map using the leaflet.js script-->
     <div id="map">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>

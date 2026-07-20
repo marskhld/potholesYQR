@@ -4,12 +4,37 @@ from .models import PotholeReport
 
 def map_view(request):
     return render(request, 'reports/map.html')
-
+"""
 def pothole_data(request):
     potholes = PotholeReport.objects.all().values(
         'id', 'ticket_number', 'created_date', 'updated_date', 'latitude', 'longitude', 'address', 'description', 'severity', 'current_status', 'public_notes'
     )
     return JsonResponse(list(potholes), safe=False)
+"""
+# load the photos for the map, too
+def pothole_data(request):
+    data = []
+    for report in PotholeReport.objects.all():
+        photos = [
+            photo.file_path.url
+            for photo in Photo.objects.filter(report=report)
+        ]
+        data.append({
+            'id': report.id,
+            'ticket_number': report.ticket_number,
+            'created_date': report.created_date,
+            'updated_date': report.updated_date,
+            'latitude': report.latitude,
+            'longitude': report.longitude,
+            'address': report.address,
+            'description': report.description,
+            'severity': report.severity,
+            'current_status': report.current_status,
+            'public_notes': report.public_notes,
+            'photos': photos
+        })
+    return JsonResponse(data, safe=False)
+
 from django.shortcuts import render, redirect
 
 # Django shortcuts for loading pages, redirecting, and finding objects
