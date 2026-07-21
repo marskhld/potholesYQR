@@ -1,5 +1,7 @@
-import uuid 
+import uuid
+
 from django.db import models
+
 from .state import get_state
 
 # Note: Django auto-creates id fields for each model, so we don't need to define them manually
@@ -67,6 +69,22 @@ class PotholeReport(models.Model):  # model for storing pothole report informati
     def set_state(self, new_status):
         self.current_status = new_status
         self.save()
+
+        # transition methods that delegate to the current state object
+    def approve(self, severity):
+        self.state.approve(self, severity)
+
+    def reject(self):
+        self.state.reject(self)
+
+    def start_work(self):
+        self.state.start_work(self)
+
+    def pend(self):
+        self.state.pend(self)
+
+    def close(self):
+        self.state.close(self)
 
 class Photo(models.Model):
     report = models.ForeignKey(PotholeReport, on_delete=models.CASCADE)  
