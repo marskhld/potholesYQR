@@ -26,7 +26,16 @@ class PotholeReport(models.Model):  # model for storing pothole report informati
     latitude = models.DecimalField(max_digits=9, decimal_places=6)  # map coordinates for the pothole location (6 decimal places for precision)
     longitude = models.DecimalField(max_digits=9, decimal_places=6)
     description = models.TextField(max_length=500)
-    severity = models.CharField(max_length=20, choices=[("low", "Low"), ("medium", "Medium"), ("high", "High")], default="low",)
+    severity = models.CharField(
+        max_length=20,
+        choices=[
+            ("n/a", "Not Assessed"),
+            ("low", "Low"),
+            ("medium", "Medium"),
+            ("high", "High"),
+        ],
+        default="n/a",
+    )
     ticket_number = models.CharField(max_length=20, unique=True, default=generate_ticket)  # auto-generate ticket number!
     created_date = models.DateTimeField(auto_now_add=True)  # automatically sets to current date/time when object is created (only once!)
     updated_date = models.DateTimeField(auto_now=True)  # updates every time report is saved
