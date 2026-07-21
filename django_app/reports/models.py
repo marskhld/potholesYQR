@@ -86,6 +86,9 @@ class PotholeReport(models.Model):  # model for storing pothole report informati
     def close(self):
         self.state.close(self)
 
+    def prevent_transition_to_new(self):
+        self.state.prevent_transition_to_new(self)
+
 class Photo(models.Model):
     report = models.ForeignKey(PotholeReport, on_delete=models.CASCADE)  
     file_path = models.ImageField(upload_to="photos/") 

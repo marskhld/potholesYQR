@@ -258,6 +258,8 @@ def staff_report_detail(request, ticket):
                                 report.pend()
                             elif new_status == "closed":
                                 report.close()
+                            elif new_status == "new":
+                                report.prevent_transition_to_new()
                         else:
                             report.severity = new_severity
 

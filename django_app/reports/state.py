@@ -19,12 +19,15 @@ class PotholeReportState(ABC): # interface/abstract class for PotholeReportState
 
     def close(self, report):
         raise ValueError("This report cannot be closed.")
+
+    def prevent_transition_to_new(self, report):
+        raise ValueError("A report cannot be moved back to New state.")
     
     @property
     def map_icon_color(self):
         return "gray"  # Default fallback
 
-# concrete states - define allowed transitions for each state
+# concrete states - define allowed transitions for each state. if not there, then error
 class NewState(PotholeReportState): # first state of a report, when it is first submitted
     def approve(self, report, severity): 
         if severity not in ['low', 'medium', 'high']:
