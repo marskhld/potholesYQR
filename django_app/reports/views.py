@@ -246,7 +246,7 @@ def staff_report_detail(request, ticket):
                 try:
                     # Keep the report update and history record together
                     with transaction.atomic():
-                        # state transition machine - for state only changes
+                        # state transition machine - for state changes only
                         if old_status != new_status:
                             if new_status == "approved":
                                 report.approve(severity=new_severity)
@@ -260,9 +260,9 @@ def staff_report_detail(request, ticket):
                                 report.close()
                             elif new_status == "new":
                                 report.prevent_transition_to_new()
-                        else:
-                            report.severity = new_severity
 
+                        # update & save remaining report info
+                        report.severity = new_severity
                         report.staff_notes = new_staff_notes
                         report.public_notes = new_public_notes
                         report.save()

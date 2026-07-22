@@ -45,7 +45,7 @@ class NewState(PotholeReportState): # first state of a report, when it is first 
 class RejectedState(PotholeReportState):
     @property
     def map_icon_color(self):
-        return "dark-gray"
+        return "red"
 
 class ApprovedState(PotholeReportState):
     def start_work(self, report):
@@ -56,7 +56,7 @@ class ApprovedState(PotholeReportState):
 
     @property
     def map_icon_color(self):
-        return "yellow"
+        return "green"
 
 class PendingState(PotholeReportState):
     def start_work(self, report):
@@ -64,7 +64,7 @@ class PendingState(PotholeReportState):
 
     @property
     def map_icon_color(self):
-        return "red" 
+        return "yellow" 
 
 class InProgressState(PotholeReportState):
     def close(self, report):
@@ -77,7 +77,7 @@ class InProgressState(PotholeReportState):
 class ClosedState(PotholeReportState):
     @property
     def map_icon_color(self):
-        return "green"  # Green for closed per design document
+        return "dark-grey" 
 
 def get_state(status): # helper function
     states = {

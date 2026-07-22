@@ -59,7 +59,7 @@ class PotholeReport(models.Model):  # model for storing pothole report informati
     )  # TODO: changed the name to status instead of state
 
     @property
-    def state(self):  # will return the current State object corresponding to current_status
+    def state(self):  # getter function to return the current State object corresponding to current_status
         return get_state(self.current_status)
 
     @property
@@ -70,7 +70,7 @@ class PotholeReport(models.Model):  # model for storing pothole report informati
         self.current_status = new_status
         self.save()
 
-        # transition methods that delegate to the current state object
+    # transition methods that delegate to the current state object
     def approve(self, severity):
         self.state.approve(self, severity)
 
