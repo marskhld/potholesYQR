@@ -98,6 +98,7 @@ class PotholeReportForm(forms.ModelForm):
             "description": forms.Textarea(
                 attrs={
                     "class": "form-control",
+                    "maxlength": 500,
                     "rows": 6,
                     "placeholder": "Example:\n"
                     "• Approximately 40 cm wide\n"
@@ -109,7 +110,10 @@ class PotholeReportForm(forms.ModelForm):
         error_messages = {
             "address": {
                 "required": "Please enter the address or nearest location of the pothole."
-            }
+            },
+            "description": {
+                "max_length": "Description cannot exceed 500 characters."
+            },
         }
 
     def __init__(self, *args, **kwargs):  # for error messaging
@@ -143,3 +147,13 @@ class PotholeReportForm(forms.ModelForm):
                 "Please enter a more complete address so we can accurately locate the pothole."
             )
         return address
+    
+    def clean_description(self):
+        description = self.cleaned_data.get("description", "")
+
+        if len(description) > 500:
+            raise forms.ValidationError(
+                "Description cannot exceed 500 characters."
+            )
+
+        return description

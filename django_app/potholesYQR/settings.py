@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -102,7 +103,6 @@ DATABASES = { # for local development (SQLite)
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -142,3 +142,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" # for development purposes only
     # email will be printed in terminal instead of being sent. For production, use SMTP backend and configure email settings in .env file.
+
+# Photo upload size limit
+DATA_UPLOAD_MAX_MEMORY_SIZE = 12582912  # Max size of incoming request = 12 * 1024 * 1024
+FILE_UPLOAD_MAX_MEMORY_SIZE = 12 * 1024 * 1024 # Max size of file upload = 12 MB
