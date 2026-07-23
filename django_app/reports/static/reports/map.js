@@ -372,4 +372,6 @@ document.getElementById("map-clear-filters").addEventListener("click", () => {
     document.getElementById("map-created-to-date").value = "";
     document.getElementById("potholeSearch").value = "";
     filterMarkers();
+    map.closePopup(); //closes the popup if it is open when the filters are cleared
+    map.setView(REGINA, 13); // reset the map view to Regina when filters are cleared
 });
