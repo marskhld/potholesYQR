@@ -8,9 +8,10 @@
     <!--font-->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <!-- site-wide styling -->
     <link rel="stylesheet" href="{% static 'css/website.css' %}" />
@@ -22,42 +23,56 @@
 
   <body class="{% block body_class %}{% endblock body_class %}">
     <header class="site-header">
-  <div class="header-content">
+      <div class="header-content">
 
         {% block header_logo %}
-    <a href="{% url 'submit_report' %}" class="header-logo">
+          <a href="{% url 'submit_report' %}" class="header-logo">
             <img src="{% static 'images/header-logo.png' %}"
-        alt="Potholes YQR"
+                 alt="Potholes YQR"
                  class="header-icon" />
-    </a>
+          </a>
         {% endblock header_logo %}
 
-    <div class="header-text">
-      <h1>
-        {% block header_title %}
-          Potholes YQR
-        {% endblock header_title %}
-      </h1>
+        <div class="header-text">
+          <h1>
+            {% block header_title %}
+              Potholes YQR
+            {% endblock header_title %}
+          </h1>
 
-      <p>
-        {% block header_subtitle %}
-          Help us keep our roads safe by reporting potholes.
-        {% endblock header_subtitle %}
-      </p>
-    </div>
+          <p>
+            {% block header_subtitle %}
+              Help us keep our roads safe by reporting potholes.
+            {% endblock header_subtitle %}
+          </p>
+        </div>
+        <nav class="header-nav">
+          {% block header_nav %}
+            <a href="{% url 'submit_report' %}" class="nav-link">Report a Pothole</a>
+            <a href="#" class="nav-link">Track a Report</a> {% comment "TODO: Add map/home link here" %}{% endcomment %}
+            <a href="#" class="nav-link">FAQ</a> {% comment "TODO: do we want to create a FAQ page?" %}{% endcomment %}
+            <a href="#" class="nav-link"><i class="fa-solid fa-phone"></i> Contact Us</a> {% comment "TODO: do we want to create this page?" %}{% endcomment %}
+          {% endblock header_nav %}
+        </nav>
 
-    {# Optional area for buttons such as staff Logout #}
-    <div class="header-actions">
-      {% block header_actions %}
-      {% endblock header_actions %}
-    </div>
+        {# for buttons like staff Logout #}
+        <div class="header-actions">
+          {% block header_actions %}
+          {% endblock header_actions %}
+        </div>
 
-  </div>
-</header>
+      </div>
+    </header>
 
     <main>
       {% block content %}{% endblock %}
     </main>
+
+    <footer>
+      <div class="footer-container">
+        <p>© 2026 Potholes YQR. All rights reserved.</p>
+      </div>
+    </footer>
 
     <!-- shared site-wide JS -->
     <script src="{% static 'js/website.js' %}"></script>
@@ -65,8 +80,5 @@
     <!-- page-specific JS -->
     {% block extra_js %}{% endblock %}
 
-    <footer>
-      © 2026 Potholes YQR
-    </footer>
   </body>
 </html>

@@ -16,12 +16,19 @@
   Pothole Report Form
 {% endblock %}
 
-
 {% block header_subtitle %}
 
   Help us keep our roads safe by reporting potholes in your area.
 {% endblock %}
 
+<nav class="header-nav">
+  {% block header_nav %}
+    <a href="{% url 'submit_report' %}" class="nav-link active">Report a Pothole</a>
+    <a href="#" class="nav-link">Track a Report</a> {% comment "TODO: Add map/home link here" %}{% endcomment %}
+    <a href="#" class="nav-link">FAQ</a> {% comment "TODO: do we want to create a FAQ page?" %}{% endcomment %}
+    <a href="#" class="nav-link"><i class="fa-solid fa-phone"></i> Contact Us</a> {% comment "TODO: do we want to create this page?" %}{% endcomment %}
+  {% endblock header_nav %}
+</nav>
 
 {% block content %}
   {# main body #}
@@ -81,7 +88,7 @@
     Provide any helpful details such as pothole size, nearby landmarks, or
     potential hazards.
   </p>
-  {{ report_form.description }} 
+  {{ report_form.description }}
   <div class="character-counter">
     <span id="description-count">0</span> / 500 characters
   </div>

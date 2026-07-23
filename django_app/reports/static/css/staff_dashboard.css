@@ -33,26 +33,6 @@ body {
   line-height: 1.5;
 }
 
-/* Logout button styling */
-/* Logout button inside the orange header */
-.header-logout-link {
-  display: inline-block;
-  background-color: white;
-  color: #d65300;
-  padding: 10px 18px;
-  border: 2px solid white;
-  border-radius: 6px;
-  font-weight: 700;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-/* Logout button hover effect */
-.header-logout-link:hover {
-  background-color: transparent;
-  color: white;
-}
-
 /* Wrapper for dashboard summary cards */
 .summary-cards {
   display: flex;
