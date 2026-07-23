@@ -95,8 +95,13 @@ map.on('click', function (e) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            const address = data.display_name.replace(/^(\d+\s+)?(.*?),\s*Regina.*$/i, '$1 $2') || "Address not found";
-
+            // const address = data.display_name.replace(/^(\d+),\s*(.*?),\s*Regina.*$/i, '$1 $2') || "Address not found";
+            const a = data.address || {};
+            const address = [[a.house_number, a.road].filter(Boolean).join(" "), a.neighbourhood].filter(Boolean).join(", ") || 
+                                             a.road || 
+                                             a.neighbourhood || 
+                                             a.suburb || 
+                                             "Address not found";
             L.popup()
                 .setLatLng(e.latlng)
                 .setContent(`
@@ -164,10 +169,14 @@ fetch('/api/potholes/')
                 allPotholeMarkers.push(marker);
                 console.log(data[0]);
                 // Extract the address up to Regina and get rid of the comma after the building number
-                //(\d+\s+)? optional street number
-                //(.*?) everything up to the first comma
-                //Regina.* → remove Regina and everything after
-                const trimmedAddress = p.address.replace(/^(\d+\s+)?(.*?),\s*Regina.*$/i, '$1 $2');
+                //const trimmedAddress = p.address.replace(/^(\d+),\s*(.*?),\s*Regina.*$/i, '$1 $2');
+                const trimmedAddress = p.address.replace(/^(?:(\d+),\s*)?(.*?),\s*Regina.*$/i,(_, number, street) => number ? `${number} ${street}` : street);
+                /* const a = p.address || {};
+                const trimmedAddress = [[a.house_number, a.road].filter(Boolean).join(" "), a.neighbourhood].filter(Boolean).join(", ") || 
+                                             a.road || 
+                                             a.neighbourhood || 
+                                             a.suburb || 
+                                             "Address not found"; */
                 // Format the dates to remove the time so they are yyyy-mm-dd
                 const createdDate = p.created_date.split('T')[0];
                 const updatedDate = p.updated_date.split('T')[0];
