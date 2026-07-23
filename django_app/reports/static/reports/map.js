@@ -270,7 +270,7 @@ fetch('/api/potholes/')
                                 height:15px;
                                 vertical-align:text-bottom;
                                 margin-left:4px;"> ${statusLabels[p.current_status] || p.current_status}<br>
-                    Severity: ${p.severity}<br>
+                    Severity: ${severityLabels[p.severity] || p.severity}<br>
                     Reported: ${createdDate}<br>
                     Updated: ${updatedDate}<br>
                     Notes: ${p.public_notes}<br>
