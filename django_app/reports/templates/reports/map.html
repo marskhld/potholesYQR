@@ -16,68 +16,66 @@
 
 {# Browser tab title #}
 {% block title %}
-  potholesYQR Pothole Map
+potholesYQR Pothole Map
 {% endblock title %}
 
 {# Dashboard-specific CSS file #}
 {% block extra_css %}
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-    <link rel="stylesheet" href="{% static 'reports/map.css' %}">
-    <link rel="stylesheet" href="{% static 'css/submit_report.css' %}">
-    <link rel="stylesheet" href="{% static 'css/staff_dashboard.css' %}">
-    
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<link rel="stylesheet" href="{% static 'reports/map.css' %}">
+<link rel="stylesheet" href="{% static 'css/submit_report.css' %}">
+<link rel="stylesheet" href="{% static 'css/staff_dashboard.css' %}">
+
 {% endblock extra_css %}
 
 {# Header title from base.html #}
 {% block header_title %}
-  potholesYQR Pothole Map
+potholesYQR Pothole Map
 {% endblock header_title %}
 
 {# Header subtitle from base.html #}
 {% block header_subtitle %}
-  Review reported potholes
+Review reported potholes
 {% endblock header_subtitle %}
 
 {% block header_actions %}
-    <a href="{% url 'submit_report' %}" class="header-logout-link">Submit Pothole Report</a>
+<a href="{% url 'submit_report' %}" class="header-logout-link">Submit Pothole Report</a>
 {% endblock header_actions %}
 
 {# Main page content #}
 {% block content %}
 <!--create the ticket search and pothole report filter controls above the map-->
-    <div class="map-filters">
-        <input type="text"
-            id="potholeSearch"
-            title="Type a Pothole Report Ticket # to locate it on the map"
-            placeholder="Pothole Report Ticket #">
-        <button id="potholeSearchBtn" type="button">Search</button>
-        <label for="map-severity-filter">Severity:</label>
-        <select id="map-severity-filter">
-            <option value="">All</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-        </select>
-        <label for="map-status-filter">Status:</label>
-        <select id="map-status-filter">
-            <option value="">All</option>
-            <option value="approved">Approved</option>
-            <option value="in_progress">In Progress</option>
-            <option value="pending">Pending</option>
-        </select>
-        <label for="map-created-date-filter">Date Range - From:</label>
-        <input type="date" id="map-created-from-date">
-        <label>To:</label>
-        <input type="date" id="map-created-to-date">
-        <button id="map-clear-filters">Clear Filters</button>
-    </div>
+<div class="map-filters">
+    <input type="text" id="potholeSearch" title="Type a Pothole Report Ticket # to locate it on the map"
+        placeholder="Pothole Report Ticket #">
+    <button id="pothole-Search-Btn">Search</button>
+    <label for="map-severity-filter">Severity:</label>
+    <select id="map-severity-filter">
+        <option value="">All</option>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+    </select>
+    <label for="map-status-filter">Status:</label>
+    <select id="map-status-filter">
+        <option value="">All</option>
+        <option value="approved">Approved</option>
+        <option value="in_progress">In Progress</option>
+        <option value="pending">Pending</option>
+    </select>
+    <label for="map-created-date-filter">Date Range - From:</label>
+    <input type="date" id="map-created-from-date">
+    <label>To:</label>
+    <input type="date" id="map-created-to-date">
+    <button id="map-clear-filters">Clear Filters</button>
+</div>
 
-    <!--display the map using the leaflet.js script-->
-    <div id="map">
+<!--display the map using the leaflet.js script-->
+<div id="map">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="{% static 'reports/map.js' %}"></script>
-    </div>
+</div>
 
 {% endblock content %}

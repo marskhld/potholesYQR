@@ -10,7 +10,7 @@
 */
 
 const REGINA = [50.4452, -104.6189];
-const map = L.map('map').setView(REGINA, 13);
+const map = L.map('map',{minZoom: 13}).setView(REGINA, 13); //Preventing the user from zooming out too far
 const potholeReportMarkers = {};
 const allPotholeMarkers = [];
 const statusLabels = {
@@ -95,16 +95,21 @@ map.on('click', function (e) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            const address = data.display_name || "Address not found";
+            const address = data.display_name.replace(/^(\d+\s+)?(.*?),\s*Regina.*$/i, '$1 $2') || "Address not found";
 
             L.popup()
                 .setLatLng(e.latlng)
                 .setContent(`
-                    <b>Coordinates</b><br>
-                    Lat: ${lat}<br>
-                    Lon: ${lon}<br><br>
-                    <b>Nearest Address</b><br>
+                  <b>Nearest Address: </b>
                     ${address}
+                    <div style="text-align: center;" class="button">
+                        <a href='/api/report/?lat=${lat}&lon=${lon}'
+                        target="_blank">
+                        <button type="submit" 
+                                style ="width:auto; font-size:12px"> 
+                                Submit Pothole Report 
+                        </button>
+                    </a></div>
                 `)
                 .openOn(map);
         })
@@ -114,9 +119,6 @@ map.on('click', function (e) {
             L.popup()
                 .setLatLng(e.latlng)
                 .setContent(`
-                    <b>Coordinates</b><br>
-                    Lat: ${lat}<br>
-                    Lon: ${lon}<br><br>
                     <b>Nearest Address</b><br>
                     Error retrieving address
                 `)
@@ -162,7 +164,10 @@ fetch('/api/potholes/')
                 allPotholeMarkers.push(marker);
                 console.log(data[0]);
                 // Extract the address up to Regina and get rid of the comma after the building number
-                const trimmedAddress = p.address.replace(/^(\d+),\s*(.*?),\s*Regina.*$/i, '$1 $2');
+                //(\d+\s+)? optional street number
+                //(.*?) everything up to the first comma
+                //Regina.* → remove Regina and everything after
+                const trimmedAddress = p.address.replace(/^(\d+\s+)?(.*?),\s*Regina.*$/i, '$1 $2');
                 // Format the dates to remove the time so they are yyyy-mm-dd
                 const createdDate = p.created_date.split('T')[0];
                 const updatedDate = p.updated_date.split('T')[0];
@@ -184,7 +189,7 @@ fetch('/api/potholes/')
                                 border-radius:50%;
                                 width:15px;
                                 height:15px;
-                                vertical-align:text-bottom;
+                                vertical-align:text-boTracking Number: Yttom;
                                 margin-left:4px;"> ${severityLabels[p.severity] || p.severity}<br>
                     Status: ${statusLabels[p.current_status] || p.current_status}<br>
                     Reported: ${createdDate}<br>
@@ -231,7 +236,7 @@ map.addControl(new SearchControl()); */
 
 // Process the search
 document.addEventListener("click", function (e) {
-    if (e.target.id === "potholeSearchBtn") {
+    if (e.target.id === "pothole-Search-Btn") {
         const ticketNumber =
             document.getElementById("potholeSearch").value.trim();
         const marker = potholeReportMarkers[ticketNumber];
