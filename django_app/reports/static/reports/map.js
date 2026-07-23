@@ -32,7 +32,7 @@ const severityLabels = {
 // Obtained different coloured markers for different severity
 // Code similar to this is provided at the URL above because
 // that is how it works. Adjusted for our project.
-const pinSeverityIcons = {
+/* const pinSeverityIcons = {
     high: L.icon({
         iconUrl: '/static/images/marker-icon-high_red.png',
         iconRetinaUrl: '/static/images/marker-icon-2x-high_red.png',
@@ -62,8 +62,9 @@ const pinSeverityIcons = {
         popupAnchor: [1, -34],
         shadowSize: [41, 41]
      })
-};
+}; */
 
+// Define Status marker pin icons
 const pinStatusIcons = {
     approved: L.icon({
         iconUrl: '/static/images/marker-icon-approved-green.png',
@@ -85,7 +86,7 @@ const pinStatusIcons = {
         shadowSize: [41, 41]
     }),
 
-    Pending: L.icon({
+    pending: L.icon({
         iconUrl: '/static/images/marker-icon-pending-yellow.png',
         iconRetinaUrl: '/static/images/marker-icon-2x-pending-yellow.png',
         shadowUrl: '/static/images/marker-shadow.png',
@@ -100,6 +101,39 @@ const pinStatusIcons = {
 L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap France contributors'
 }).addTo(map);
+
+// set up the Status legend embedded on the leaflet map
+const mapLegend = L.control({position: 'topleft'});
+
+mapLegend.onAdd = function (){
+    const mapLegendDiv = L.DomUtil.create('div','map-legend');
+    const mapLegendHTML = `
+            <span class="map-legend-title">Status Legend:</span>
+
+            <div class="map-legend-item">
+                <img src="/static/images/marker-icon-approved-green.png"
+                    alt="Approved">
+                <span>Approved</span>
+            </div>
+
+            <div class="map-legend-item">
+                <img src="/static/images/marker-icon-in_progress-orange.png"
+                    alt="In Progress">
+                <span>In Progress</span>
+            </div>
+
+            <div class="map-legend-item">
+                <img src="/static/images/marker-icon-pending-yellow.png"
+                    alt="Pending">
+                <span>Pending</span>
+            </div>
+        </div>
+    `;
+    mapLegendDiv.innerHTML = mapLegendHTML;
+    return mapLegendDiv;
+};
+
+mapLegend.addTo(map);
 
 //Marker
 /* L.marker(REGINA).addTo(map)
@@ -194,7 +228,8 @@ fetch('/api/potholes/')
                 .join('');
                 //console.log(photoHtml);
                 // choose marker colour based on severity
-                const markerIcon = pinSeverityIcons[p.severity] || pinSeverityIcons.low;
+                //const markerIcon = pinSeverityIcons[p.severity] || pinSeverityIcons.low;
+                const markerIcon = pinStatusIcons[p.current_status] || pinStatusIcons.pending;
                 // update marker colour based on severity
                 const marker = L.marker([p.latitude, p.longitude],{ icon: markerIcon }).addTo(map);
                 marker.reportData = p;
@@ -213,26 +248,29 @@ fetch('/api/potholes/')
                 const createdDate = p.created_date.split('T')[0];
                 const updatedDate = p.updated_date.split('T')[0];
                 // set the icon used beside Severity in the popup
-                const severityIcon =
+/*                 const severityIcon =
                     p.severity === 'high' ? '/static/images/severity_high_red.png' :
                     p.severity === 'medium' ? '/static/images/severity_medium_orange.png' :
                     '/static/images/severity_low_yellow.png';
-                //if (p.severity == "high") {severityColour = "RED"}
-
+ */                //if (p.severity == "high") {severityColour = "RED"}
+                const statusIcon =
+                    p.current_status === 'approved' ? '/static/images/status_approved_green.png' :
+                    p.current_status === 'in_progress' ? '/static/images/status_in_progress_orange.png' :
+                    '/static/images/status_pending_yellow.png';
                 // Build the popup HTML
                 const popupHTML = `
                     <b>Tracking Number: ${p.ticket_number}</b><br>
                     Address: ${trimmedAddress}<br>
-                    Severity: <img src='${severityIcon}' 
-                        alt='${severityLabels[p.severity] || p.severity}' 
+                    Status: <img src='${statusIcon}' 
+                        alt='${statusLabels[p.current_status] || p.current_status}' 
                         style="border:1px 
                                 solid black;
                                 border-radius:50%;
                                 width:15px;
                                 height:15px;
-                                vertical-align:text-boTracking Number: Yttom;
-                                margin-left:4px;"> ${severityLabels[p.severity] || p.severity}<br>
-                    Status: ${statusLabels[p.current_status] || p.current_status}<br>
+                                vertical-align:text-bottom;
+                                margin-left:4px;"> ${statusLabels[p.current_status] || p.current_status}<br>
+                    Severity: ${p.severity}<br>
                     Reported: ${createdDate}<br>
                     Updated: ${updatedDate}<br>
                     Notes: ${p.public_notes}<br>
