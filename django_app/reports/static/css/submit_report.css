@@ -14,6 +14,13 @@
     height: 400px;   
     width: 100%;
     margin-top: 10px;
+    
+.page-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 3%);
 }
 
 /* styling for the photo upload section */
@@ -99,6 +106,7 @@
   border-radius: 5px;
   font-size: 15px;
   box-sizing: border-box;
+  font-family: "Inter", sans-serif;
 }
 
 .form-control:focus {
@@ -186,4 +194,14 @@ body {
 
 textarea.form-control {
   border-radius: 6px;
+  resize: vertical;
+}
+
+/* styling for character counter */
+
+.character-counter {
+  text-align: right;
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  color: #6c757d;
 }

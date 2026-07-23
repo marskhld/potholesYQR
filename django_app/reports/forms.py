@@ -106,6 +106,7 @@ class PotholeReportForm(forms.ModelForm):
             "description": forms.Textarea(
                 attrs={
                     "class": "form-control",
+                    "maxlength": 500,
                     "rows": 6,
                     "placeholder": "Example:\n"
                     "• Approximately 40 cm wide\n"
@@ -116,8 +117,11 @@ class PotholeReportForm(forms.ModelForm):
         }
         error_messages = {
             "address": {
-                "required": "Please select location on the map."
-            }
+                "required": "Please enter the address or nearest location of the pothole."
+            },
+            "description": {
+                "max_length": "Description cannot exceed 500 characters."
+            },
         }
 
     def __init__(self, *args, **kwargs):  # for error messaging
@@ -142,8 +146,19 @@ class PotholeReportForm(forms.ModelForm):
                     "Only JPEG (.jpg, .jpeg) and PNG (.png) image files are supported."
                 )
         return photos
+   
+    def clean_description(self):
+        description = self.cleaned_data.get("description", "")
 
-"""     def clean_address(self):
+        if len(description) > 500:
+            raise forms.ValidationError(
+                "Description cannot exceed 500 characters."
+            )
+
+        return description
+
+"""     
+    def clean_address(self):
         address = self.cleaned_data.get("address")
 
         if not address or len(address) < 5:

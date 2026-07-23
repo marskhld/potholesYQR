@@ -22,31 +22,22 @@
 .success-icon {
   width: 90px;
   height: 90px;
-
   margin: auto;
 
   border-radius: 50%;
-
   background: #e8f5e9;
-
   color: #2e7d32;
-
   font-size: 48px;
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
-
   margin-bottom: 24px;
 }
 
 .confirmation-card h1 {
   margin-bottom: 18px;
-
   font-size: 2.2rem;
-
   color: #1f2937;
 }
 

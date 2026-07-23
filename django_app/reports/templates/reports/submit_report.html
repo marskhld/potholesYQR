@@ -20,12 +20,19 @@ Pothole Report Form | Potholes YQR
 Pothole Report Form
 {% endblock %}
 
-
 {% block header_subtitle %}
 
 Help us keep our roads safe by reporting potholes in your area.
 {% endblock %}
 
+<nav class="header-nav">
+  {% block header_nav %}
+    <a href="{% url 'submit_report' %}" class="nav-link active">Report a Pothole</a>
+    <a href="#" class="nav-link">Track a Report</a> {% comment "TODO: Add map/home link here" %}{% endcomment %}
+    <a href="#" class="nav-link">FAQ</a> {% comment "TODO: do we want to create a FAQ page?" %}{% endcomment %}
+    <a href="#" class="nav-link"><i class="fa-solid fa-phone"></i> Contact Us</a> {% comment "TODO: do we want to create this page?" %}{% endcomment %}
+  {% endblock header_nav %}
+</nav>
 
 {% block content %}
 {# main body #}
@@ -70,18 +77,30 @@ Help us keep our roads safe by reporting potholes in your area.
 
     <h2>Pothole Report Details</h2>
 
-    <div class="form-group">
-        <label for="{{ report_form.address.id_for_label }}">
-            Address <span class="required">*</span>
-        </label>
-        {{ report_form.address }} {% if report_form.address.errors %}
-        <div class="error-message">{{ report_form.address.errors.0 }}</div>
-        {% endif %}
-    </div>
+<div class="form-group">
+  <label for="{{ report_form.description.id_for_label }}">Description</label>
+  <p class="help-text">
+    Provide any helpful details such as pothole size, nearby landmarks, or
+    potential hazards.
+  </p>
+  {{ report_form.description }}
+  <div class="character-counter">
+    <span id="description-count">0</span> / 500 characters
+  </div>
+  {% if report_form.description.errors %}
+    <div class="error-message">{{ report_form.description.errors.0 }}</div>
+  {% endif %}
+</div>
 
-    <div class="form-group">
-        <label>Select Location on Map</label>
-        <p class="help-text">
+<div class="form-group">
+  <label for="{{ report_form.photos.id_for_label }}">Photos (optional)</label>
+  <p class="help-text">
+    Upload one or more photos to help us understand the issue. Accepted: JPG, PNG, GIF. Maximum size: 12 MB per image.
+  </p>
+  {{ report_form.photos }} {% if report_form.photos.errors %}
+  <div class="error-message">{{ report_form.photos.errors.0 }}</div>
+{% endif %}
+</div>
 
             Click the pothole location on the map.
 

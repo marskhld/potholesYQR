@@ -7,3 +7,6 @@ db.sqlite3
 django_app/venv/
 media/
 logs/
+django_app/static/
+.DS_Store
+**/.DS_Store

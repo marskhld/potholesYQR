@@ -1,42 +1,43 @@
-{# This page uses Maria's shared base.html layout #}
 {% extends "reports/base.html" %}
-
-{# This allows us to use Django static files like CSS, images, and JS #}
 {% load static %}
 
-{# This changes the browser tab title #}
 {% block title %}
   Staff Login | Potholes YQR
 {% endblock title %}
 
-{# This loads CSS that is only for the staff login page #}
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/staff_login.css' %}">
 {% endblock extra_css %}
 
-{# This changes the main page heading inside the shared header #}
+{% block body_class %}staff-theme{% endblock body_class %}
+
+{# header stuff #}
+{% block header_logo %}
+  <a href="{% url 'staff_dashboard' %}" class="header-logo">
+    <img src="{% static 'images/staff-logo.png' %}"
+         alt="Potholes YQR Staff Portal"
+         class="header-icon" />
+  </a>
+{% endblock header_logo %}
+
 {% block header_title %}
   Staff Login
 {% endblock header_title %}
 
-{# This changes the subtitle inside the shared header #}
-{% block header_subtitle %}
-  City staff can review, approve, and manage submitted pothole reports.
-{% endblock header_subtitle %}
+{% block header_subtitle %}Manage submitted pothole reports and monitor their progress.{% endblock header_subtitle %}
 
-{# This is the main body content of the staff login page #}
+{% block header_nav %}{# empty #}{% endblock header_nav %}
+
+{% block header_actions %}{# empty #}{% endblock header_actions %}
+
 {% block content %}
 
   {# Outer container used to center the login card on the page #}
   <div class="staff-login-container">
-
-    {# Login card box #}
     <div class="staff-login-card">
 
-      {# Card title #}
       <h2>Staff Portal</h2>
 
-      {# Short explanation for staff users #}
       <p class="login-intro">
         Sign in to access submitted pothole reports, validate report details,
         update statuses, and manage resolution notes.
@@ -44,9 +45,7 @@
 
       {# If login fails, Django will send an error message here #}
       {% if error %}
-        <div class="error-summary">
-          {{ error }}
-        </div>
+        <div class="error-summary">{{ error }}</div>
       {% endif %}
 
       {# Login form sends username and password to staff_login view #}
@@ -78,16 +77,12 @@
         </div>
 
         {# Submit button for login #}
-        <button type="submit" class="btn-primary">
-          Login
-        </button>
+        <button type="submit" class="btn-primary">Login</button>
 
       </form>
 
       {# Small warning/note for users #}
-      <p class="staff-note">
-        Authorized staff only. Reports must be reviewed before approval or rejection.
-      </p>
+      <p class="staff-note">Authorized staff only. Reports must be reviewed before approval or rejection.</p>
 
     </div>
 
