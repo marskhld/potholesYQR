@@ -73,7 +73,7 @@
 
 /* Table header background */
 .reports-table thead {
-  background-color: #1976d2;
+  background-color: var(--staff-primary);
   color: white;
 }
 
