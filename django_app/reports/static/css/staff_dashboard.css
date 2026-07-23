@@ -1,13 +1,6 @@
-/* Sets page background to match Maria's submit report page */
-body {
-  background: #f4f6f8;
-}
-
 /* Main wrapper for the full dashboard content */
 .dashboard-container {
-  max-width: 1150px;
-  margin: 30px auto;
-  padding: 0 20px;
+  width: 100%;
 }
 
 /* Top dashboard section containing title and logout button */
