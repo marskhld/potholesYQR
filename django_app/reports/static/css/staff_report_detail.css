@@ -1,11 +1,6 @@
-/*
-  Page background matches the report submission,
-  staff login, and staff dashboard pages.
-*/
 body {
   background: #f4f6f8;
 }
-
 
 /* Centers the page content and limits its maximum width */
 .detail-container {
@@ -13,7 +8,6 @@ body {
   margin: 30px auto;
   padding: 0 20px;
 }
-
 
 /* Displays the dashboard link and current staff username */
 .detail-navigation {
@@ -23,7 +17,6 @@ body {
   margin-bottom: 20px;
 }
 
-
 /* Matches the project blue link colour */
 .back-link {
   color: #1976d2;
@@ -31,20 +24,17 @@ body {
   text-decoration: none;
 }
 
-
 /* Makes navigation interaction clear */
 .back-link:hover {
   color: #1565c0;
   text-decoration: underline;
 }
 
-
 /* Small signed-in staff information */
 .staff-user {
   color: #666;
   font-size: 14px;
 }
-
 
 /* Places the ticket heading beside the status badge */
 .report-heading {
@@ -54,12 +44,10 @@ body {
   margin-bottom: 22px;
 }
 
-
 /* Keeps the report title consistent with other section headings */
 .report-heading h2 {
   margin: 0;
 }
-
 
 /* Shared current status badge */
 .status-badge {
@@ -71,13 +59,11 @@ body {
   white-space: nowrap;
 }
 
-
 /* New report status */
 .status-new {
   background: #e3f2fd;
   color: #1565c0;
 }
-
 
 /* Pending report status */
 .status-pending {
@@ -85,13 +71,11 @@ body {
   color: #856404;
 }
 
-
 /* Approved report status */
 .status-approved {
   background: #e8f5e9;
   color: #2e7d32;
 }
-
 
 /* Rejected report status */
 .status-rejected {
@@ -99,20 +83,17 @@ body {
   color: #842029;
 }
 
-
 /* In-progress report status */
 .status-in_progress {
   background: #fff0db;
   color: #a45100;
 }
 
-
 /* Closed report status */
 .status-closed {
   background: #e2e3e5;
   color: #41464b;
 }
-
 
 /* Success notice shown after saving */
 .success-message {
@@ -124,8 +105,7 @@ body {
   border-radius: 6px;
 }
 
-
-/* Matches Maria's report-form validation error styling */
+/* Matches eport-form validation error styling */
 .error-summary {
   background: #fdeaea;
   border: 1px solid #dc3545;
@@ -135,7 +115,6 @@ body {
   border-radius: 6px;
 }
 
-
 /* Creates the main two-column page layout */
 .detail-grid {
   display: grid;
@@ -143,7 +122,6 @@ body {
   gap: 24px;
   align-items: start;
 }
-
 
 /*
   White card styling matches the existing form,
@@ -157,7 +135,6 @@ body {
   min-width: 0;
 }
 
-
 /* Section headings match the report form heading style */
 .detail-card h3 {
   border-bottom: 2px solid #e8e8e8;
@@ -165,7 +142,6 @@ body {
   margin-top: 0;
   margin-bottom: 24px;
 }
-
 
 /* Organizes submitted data into label/value columns */
 .report-information {
@@ -175,13 +151,11 @@ body {
   margin: 0;
 }
 
-
 /* Labels for report information */
 .report-information dt {
   color: #444;
   font-weight: 700;
 }
-
 
 /* Values for report information */
 .report-information dd {
@@ -191,12 +165,10 @@ body {
   overflow-wrap: anywhere;
 }
 
-
 /* Separates photos from the written report details */
 .photo-section {
   margin-top: 30px;
 }
-
 
 /* Displays uploaded photos in a responsive grid */
 .photo-grid {
@@ -205,13 +177,11 @@ body {
   gap: 14px;
 }
 
-
 /* Removes decoration from clickable photo links */
 .photo-link {
   display: block;
   text-decoration: none;
 }
-
 
 /* Photo preview styling */
 .report-photo {
@@ -223,13 +193,11 @@ body {
   border-radius: 8px;
 }
 
-
 /* Shows that the image can be opened */
 .report-photo:hover {
   opacity: 0.85;
   cursor: pointer;
 }
-
 
 /* Text used when no photos exist */
 .empty-message {
@@ -238,12 +206,10 @@ body {
   font-style: italic;
 }
 
-
 /* Space between update form fields */
 .form-group {
   margin-bottom: 20px;
 }
-
 
 /* Same label styling used in submit_report.css */
 .form-group label {
@@ -252,7 +218,6 @@ body {
   margin-bottom: 6px;
 }
 
-
 /* Same helper text styling used by Maria's form */
 .help-text {
   color: #666;
@@ -260,9 +225,8 @@ body {
   margin: 5px 0 8px;
 }
 
-
 /*
-  Shared form control design matching Maria's
+  Shared form control design matching
   report submission inputs.
 */
 .form-control {
@@ -275,7 +239,6 @@ body {
   font-size: 15px;
 }
 
-
 /* Matching blue focus effect */
 .form-control:focus {
   outline: none;
@@ -283,12 +246,10 @@ body {
   box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
 }
 
-
 /* Allows note fields to expand only vertically */
 textarea.form-control {
   resize: vertical;
 }
-
 
 /* Places the Cancel and Save buttons together */
 .form-actions {
@@ -297,7 +258,6 @@ textarea.form-control {
   gap: 12px;
   margin-top: 25px;
 }
-
 
 /* Secondary action matching other project buttons */
 .btn-secondary {
@@ -311,13 +271,11 @@ textarea.form-control {
   text-decoration: none;
 }
 
-
 /* Secondary button hover state */
 .btn-secondary:hover {
   background: #e6e6e6;
   border-color: #bdbdbd;
 }
-
 
 /*
   Main action uses the same blue as the
@@ -335,31 +293,26 @@ textarea.form-control {
   font-weight: 600;
 }
 
-
 /* Main button hover state */
 .btn-primary:hover {
   background: #1565c0;
 }
-
 
 /* Places the history card below the two-column layout */
 .history-card {
   margin-top: 24px;
 }
 
-
 /* Allows horizontal scrolling on smaller screens */
 .history-table-wrapper {
   overflow-x: auto;
 }
-
 
 /* Makes the history table fill its card */
 .history-table {
   width: 100%;
   border-collapse: collapse;
 }
-
 
 /* Shared history table cell styling */
 .history-table th,
@@ -372,19 +325,16 @@ textarea.form-control {
   overflow-wrap: anywhere;
 }
 
-
 /* Dashboard-consistent blue table heading */
 .history-table thead {
-  background: #1976d2;
+  background: var(--staff-primary);
   color: white;
 }
-
 
 /* Subtle row hover effect */
 .history-table tbody tr:hover {
   background: #f7fbff;
 }
-
 
 /* Message shown when history is empty */
 .empty-history-message {
@@ -393,10 +343,8 @@ textarea.form-control {
   text-align: center;
 }
 
-
 /* Responsive layout for tablets and phones */
 @media (max-width: 850px) {
-
   /* Stack the two cards vertically */
   .detail-grid {
     grid-template-columns: 1fr;
@@ -425,13 +373,10 @@ textarea.form-control {
   .report-information dd {
     margin-bottom: 12px;
   }
-
 }
-
 
 /* Additional adjustment for narrow phone screens */
 @media (max-width: 520px) {
-
   /* Reduce side spacing */
   .detail-container {
     padding: 0 12px;
@@ -455,5 +400,4 @@ textarea.form-control {
     width: 100%;
     text-align: center;
   }
-
 }

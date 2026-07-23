@@ -37,7 +37,7 @@
 
 /* Space between form input groups */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 /* Label styling */
@@ -56,7 +56,7 @@
   border-radius: 8px;
   font-size: 15px;
   font-family: "Inter", sans-serif;
-  box-sizing:border-box
+  box-sizing: border-box;
 }
 
 /* Input styling when clicked */
@@ -69,10 +69,11 @@
 /* Main login button */
 .btn-primary {
   width: 100%;
-  padding: 13px;
+  padding: 15px;
+
   border: none;
   border-radius: 8px;
-  background: #2563eb;
+  background: var(--staff-primary);
   color: white;
   font-weight: 700;
   font-size: 16px;
@@ -82,7 +83,7 @@
 
 /* Login button hover effect */
 .btn-primary:hover {
-  background: #1d4ed8;
+  background: var(--staff-primary-light);
 }
 
 /* Error box shown when username/password is wrong */
@@ -103,4 +104,9 @@
   text-align: center;
   font-size: 14px;
   color: #6b7280;
+}
+
+.btn-primary,
+button[type="submit"] {
+  margin-top: 15px;
 }

@@ -1,15 +1,42 @@
-/* Font */
+/* ==========================================================
+   CSS VARIABLES
+   ========================================================== */
+:root {
+  /* shared styling */
+  --surface: #ffffff;
+  --background: #f5f7fa;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --input-border: #cbd5e1;
+
+  /* resident colours (orange, white , grey) */
+  --resident-primary: #ff5500;
+  --resident-primary-hover: #e04b00;
+
+  /* staff colors (navy blue) */
+  --staff-primary: #00153b;
+  --staff-primary-light: #18283e;
+}
+
+/**=========================================================
+   GLOBAL TYPOGRAPHY
+   ========================================================== */
+
 body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
   font-family: "Inter", sans-serif;
   font-size: 16px;
   line-height: 1.5;
-  margin:0;
+  background: var(--surface);
+  color: var(--text-dark);
 }
 
-h1 {
-  font-weight: 700;
-}
-
+h1,
 h2 {
   font-weight: 700;
 }
@@ -18,57 +45,301 @@ label {
   font-weight: 600;
 }
 
-/* Header styling */
-header {
-  background: #d35400;
-  color: white;
-  padding: 26px 40px;
+/* ==========================================================
+   SHARED LAYOUT
+   ========================================================== */
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 32px auto 48px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.page-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 3%);
+}
+
+footer {
+  margin-top: auto;
+  padding: 24px 40px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-muted);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+
+/* ==========================================================
+   SHARED HEADER
+   ========================================================== */
+
+.site-header {
+  padding: 16px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
   display: flex;
   align-items: center;
-  gap: 20px;
-  width: 100%;
+  gap: 36px;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .header-logo {
-  width: 72px;
-  height: 72px;
-  background: white;
-  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .header-icon {
-  width: 48px;
-  height: 48px;
+  height: 64px;
+  width: auto;
   object-fit: contain;
 }
 
 .header-text h1 {
   margin: 0;
+  font-size: 2rem;
 }
 
 .header-text p {
-  margin: 8px 0 0;
-}
-
-/* Pushes optional header buttons to the right */
-.header-actions {
-  margin-left: auto;
-  padding-left: 20px;
-}
-
-/* Footer */
-footer {
-  margin-top: 60px;
-  padding: 20px;
-  text-align: center;
-  color: #666;
-  border-top: 1px solid #ddd;
+  margin: 2px 0 0;
   font-size: 14px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-left: auto;
+}
+
+.nav-link {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 8px 0;
+  border-bottom: 3px solid transparent;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 24px;
+}
+
+/* ==========================================================
+   SHARED FORMS
+   ========================================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+textarea,
+select,
+.form-control {
+  width: 100%;
+  padding: 12px 14px;
+  margin-top: 6px;
+
+  font: inherit;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  color: var(--text-dark);
+  background: var(--background);
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2 ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.form-control:focus {
+  outline: none;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+/* ==========================================================
+   SHARED BUTTONS
+   ========================================================== */
+
+.btn-primary,
+button[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 15px 24px;
+
+  border: none;
+  border-radius: 6px;
+
+  text-decoration: none;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  transition: background-color 0.2s ease;
+}
+
+/* ==========================================================
+   RESIDENT THEME
+   ========================================================== */
+
+body:not(.staff-theme) {
+  background: var(--background);
+}
+
+body:not(.staff-theme) .site-header {
+  background: var(--surface);
+  box-shadow: inset 0 -4px 0 var(--resident-primary);
+  padding: 18px 40px;
+}
+
+body:not(.staff-theme) .header-text h1 {
+  color: var(--text-dark);
+}
+
+body:not(.staff-theme) .header-text p {
+  color: var(--text-muted);
+}
+
+body:not(.staff-theme) .nav-link {
+  color: var(--text-dark);
+}
+
+body:not(.staff-theme) .nav-link:hover {
+  color: var(--resident-primary);
+}
+
+body:not(.staff-theme) .nav-link.active {
+  color: var(--resident-primary);
+  border-bottom-color: var(--resident-primary);
+}
+
+body:not(.staff-theme) .btn-primary,
+body:not(.staff-theme) button[type="submit"] {
+  background: var(--resident-primary);
+  color: white;
+}
+
+body:not(.staff-theme) .btn-primary:hover,
+body:not(.staff-theme) button[type="submit"]:hover {
+  background: var(--resident-primary-hover);
+}
+
+body:not(.staff-theme) input:focus,
+body:not(.staff-theme) textarea:focus,
+body:not(.staff-theme) select:focus,
+body:not(.staff-theme) .form-control:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+}
+/* ==========================================================
+   STAFF THEME
+   ========================================================== */
+
+body.staff-theme {
+  background: var(--surface);
+}
+
+body.staff-theme .site-header {
+  background: var(--staff-primary);
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  padding: 14px 40px;
+}
+
+body.staff-theme .header-logo {
+  padding-right: 24px;
+  margin-right: 8px;
+  border-right: 1px solid rgb(255 255 255 / 15%);
+}
+body.staff-theme .header-icon {
+  height: 62px;
+}
+
+body.staff-theme .header-content {
+  gap: 28px;
+}
+
+body.staff-theme .header-text h1 {
+  font-size: 20px;
+  color: white;
+}
+
+body.staff-theme .header-text p {
+  color: #94a3b8;
+}
+
+body.staff-theme .nav-link {
+  color: #cbd5e1;
+}
+
+body.staff-theme .nav-link:hover,
+body.staff-theme .nav-link.active {
+  color: white;
+  border-bottom-color: var(--resident-primary);
+}
+
+/* Logout button styling */
+
+.header-logout-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 92px;
+  height: 40px;
+
+  background: rgb(255 255 255 / 10%);
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 8px;
+
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.header-logout-link:hover {
+  background: rgb(255 255 255 / 18%);
+  border-color: rgb(255 255 255 / 35%);
+}
+
+body.staff-theme footer {
+  background: #f8fafc;
+}
+
+body.staff-theme input:focus,
+body.staff-theme textarea:focus,
+body.staff-theme select:focus,
+body.staff-theme .form-control:focus {
+  border-color: var(--staff-primary);
+  box-shadow: 0 0 0 4px rgba(0, 21, 59, 0.12);
 }
