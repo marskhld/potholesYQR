@@ -70,7 +70,27 @@ Review reported potholes
     <input type="date" id="map-created-to-date">
     <button id="map-clear-filters">Clear Filters</button>
 </div>
+    <div class="map-legend">
+        <span class="legend-title">Status Legend:</span>
 
+        <div class="map-legend-item">
+            <img src="{% static '/images/marker-icon-approved-green.png' %}"
+                alt="Approved">
+            <span>Approved</span>
+        </div>
+
+        <div class="map-legend-item">
+            <img src="{% static '/images/marker-icon-in_progress-orange.png' %}"
+                alt="In Progress">
+            <span>In Progress</span>
+        </div>
+
+        <div class="map-legend-item">
+            <img src="{% static 'images/marker-icon-pending-yellow.png' %}"
+                alt="Pending">
+            <span>Pending</span>
+        </div>
+    </div>
 <!--display the map using the leaflet.js script-->
 <div id="map">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"

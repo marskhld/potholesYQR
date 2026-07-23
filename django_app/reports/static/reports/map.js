@@ -64,6 +64,38 @@ const pinSeverityIcons = {
      })
 };
 
+const pinStatusIcons = {
+    approved: L.icon({
+        iconUrl: '/static/images/marker-icon-approved-green.png',
+        iconRetinaUrl: '/static/images/marker-icon-2x-approved-green.png',
+        shadowUrl: '/static/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+     }),
+
+    in_progress: L.icon({
+        iconUrl: '/static/images/marker-icon-in_progress-orange.png',
+        iconRetinaUrl: '/static/images/marker-icon-2x-in_progress-orange.png',
+        shadowUrl: '/static/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    }),
+
+    Pending: L.icon({
+        iconUrl: '/static/images/marker-icon-pending-yellow.png',
+        iconRetinaUrl: '/static/images/marker-icon-2x-pending-yellow.png',
+        shadowUrl: '/static/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+     })
+};
+
 // attribution for the use of OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap France contributors'
