@@ -1,32 +1,28 @@
-{# Reuse the common Potholes YQR page structure #}
 {% extends "reports/base.html" %}
-
-{# Allow this template to load its page-specific CSS #}
 {% load static %}
 
-
-{# Browser tab title #}
 {% block title %}
   Report {{ report.ticket_number }} | Potholes YQR
 {% endblock title %}
 
-
-{# Load styling only for the staff report detail page #}
 {% block extra_css %}
-  <link
-    rel="stylesheet"
-    href="{% static 'css/staff_report_detail.css' %}"
-  >
+  <link rel="stylesheet" href="{% static 'css/staff_report_detail.css' %}">
 {% endblock extra_css %}
 
+{% block body_class %}staff-theme{% endblock body_class %}
 
-{# Shared header title from base.html #}
+{% block header_logo %}
+  <a href="{% url 'staff_dashboard' %}" class="header-logo">
+    <img src="{% static 'images/staff-logo.png' %}"
+         alt="Potholes YQR Staff Portal"
+         class="header-icon" />
+  </a>
+{% endblock header_logo %}
+
 {% block header_title %}
   Staff Report Detail
 {% endblock header_title %}
 
-
-{# Shared header subtitle from base.html #}
 {% block header_subtitle %}
   Review the complete report, validate its details, and update its progress.
 {% endblock header_subtitle %}

@@ -1,4 +1,28 @@
-/* Font */
+/* ==========================================================
+   CSS VARIABLES
+   ========================================================== */
+:root {
+  /* shared styling */
+  --surface: #ffffff;
+  --background: #f5f7fa;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --input-border: #cbd5e1;
+
+  /* resident colours (orange, white , grey) */
+  --resident-primary: #ff5500;
+  --resident-primary-hover: #e04b00;
+
+  /* staff colors (navy blue) */
+  --staff-primary: #00153b;
+  --staff-primary-light: #18283e;
+}
+
+/**=========================================================
+   GLOBAL TYPOGRAPHY
+   ========================================================== */
+
 body {
   font-family: "Inter", sans-serif;
   font-size: 16px;
@@ -18,49 +42,51 @@ label {
   font-weight: 600;
 }
 
-/* Header styling */
-header {
-  background: #d35400;
-  color: white;
-  padding: 26px 40px;
+
+.site-header {
+  padding: 16px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
   display: flex;
   align-items: center;
-  gap: 20px;
-  width: 100%;
+  gap: 36px;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .header-logo {
-  width: 72px;
-  height: 72px;
-  background: white;
-  border-radius: 50%;
   display: flex;
   align-items: center;
-  justify-content: center;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .header-icon {
-  width: 48px;
-  height: 48px;
+  height: 64px;
+  width: auto;
   object-fit: contain;
 }
 
 .header-text h1 {
   margin: 0;
+  font-size: 2rem;
 }
 
 .header-text p {
-  margin: 8px 0 0;
+  margin: 2px 0 0;
+  font-size: 14px;
 }
 
-/* Pushes optional header buttons to the right */
-.header-actions {
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
   margin-left: auto;
-  padding-left: 20px;
+}
 }
 
 /* Footer */

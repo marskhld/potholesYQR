@@ -14,23 +14,23 @@
 
     <!-- site-wide styling -->
     <link rel="stylesheet" href="{% static 'css/website.css' %}" />
+
     <!-- allows for page-specific styling -->
     {% block extra_css %}
     {% endblock extra_css %}
   </head>
 
-  <body>
-    <header>
+  <body class="{% block body_class %}{% endblock body_class %}">
+    <header class="site-header">
   <div class="header-content">
 
+        {% block header_logo %}
     <a href="{% url 'submit_report' %}" class="header-logo">
-      {# TODO: change to 'home' later so logo redirects to home page #}
-      <img
-        src="{% static 'images/potholesYQR-logo.svg' %}"
+            <img src="{% static 'images/header-logo.png' %}"
         alt="Potholes YQR"
-        class="header-icon"
-      />
+                 class="header-icon" />
     </a>
+        {% endblock header_logo %}
 
     <div class="header-text">
       <h1>
