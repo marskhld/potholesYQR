@@ -9,6 +9,12 @@
 #     Christopher Taylor
 */
 
+main {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
 #map {
     height: 80vh;   
     width: 100%;
@@ -48,6 +54,7 @@
     border-radius: 6px;
     font-weight: 700;
     cursor: pointer;
+
 }
 
 #pothole-Search-Btn:hover {
@@ -70,13 +77,13 @@
 
     background-color: #1976d2;
     color: white;
-    padding: 12px 16px;
+    padding: 10px 16px;
     /* border-radius: 10px; */
     border-radius: 0;
     margin-bottom: 0px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
     flex-wrap: wrap;
 }
 
@@ -84,10 +91,22 @@
 .map-filters input[type="text"],
 .map-filters input[type="date"]{
     /* height: 24px; */
-    padding: 8px 12px;
+    padding: 8px 14px;
     border-radius: 6px;
     border: 1px solid #ccc;
     font-size: 14px;
+}
+
+.map-filters input[type="text"] {
+    width: 280px;
+}
+
+.map-filters select {
+    width: 160px;
+}
+
+.map-filters input[type="date"] {
+    width: 180px;
 }
 
 #map-clear-filters {
