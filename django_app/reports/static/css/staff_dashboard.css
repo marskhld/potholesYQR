@@ -1,146 +1,592 @@
-/* Main wrapper for the full dashboard content */
+/* ==========================================================
+   STAFF DASHBOARD PAGE
+
+   Dashboard-specific styles only.
+   Shared header, footer, typography, and general theme
+   styles are controlled by website.css.
+   ========================================================== */
+
+
+/* ==========================================================
+   DASHBOARD HEADER ADJUSTMENTS
+   Match the Staff Report Detail header
+   ========================================================== */
+
+body.staff-theme .header-logo {
+  padding-right: 24px;
+  margin-right: 8px;
+  border-right: 1px solid rgb(255 255 255 / 15%);
+}
+
+body.staff-theme .header-icon {
+  display: block;
+  width: auto;
+  height: 52px;
+  object-fit: contain;
+}
+
+body.staff-theme .header-content {
+  gap: 28px;
+}
+
+body.staff-theme .header-text {
+  min-width: 0;
+}
+
+body.staff-theme .header-text h1 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
+body.staff-theme .header-text p {
+  margin: 3px 0 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+body.staff-theme .header-nav {
+  gap: 26px;
+}
+
+body.staff-theme .header-actions {
+  margin-left: 20px;
+}
+
+
+/* ==========================================================
+   MAIN DASHBOARD
+   ========================================================== */
+
 .dashboard-container {
   width: 100%;
 }
 
-/* Top dashboard section containing title and logout button */
 .dashboard-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 24px;
 }
 
-/* Dashboard heading styling */
 .dashboard-top h2 {
-  border-bottom: 2px solid #e8e8e8;
-  padding-bottom: 10px;
-  margin-bottom: 10px;
+  margin: 0 0 8px;
+  color: var(--text-dark);
+  font-size: 28px;
+  line-height: 1.25;
 }
 
-/* Small helper text under dashboard title */
 .dashboard-note {
-  color: #666;
+  max-width: 760px;
+  margin: 0;
+  color: var(--text-muted);
   font-size: 15px;
-  max-width: 750px;
   line-height: 1.5;
 }
 
-/* Wrapper for dashboard summary cards */
+
+/* ==========================================================
+   SUMMARY CARDS
+   ========================================================== */
+
 .summary-cards {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 25px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 24px;
 }
 
-/* Individual white summary card */
 .summary-card {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  padding: 20px 25px;
-  min-width: 200px;
+  min-width: 0;
+  padding: 16px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  box-shadow: 0 4px 14px rgb(15 23 42 / 6%);
 }
 
-/* Summary card heading */
 .summary-card h3 {
-  margin: 0 0 10px 0;
-  color: #444;
-  font-size: 16px;
+  margin: 0 0 8px;
+
+  color: var(--text-muted);
+
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
 }
 
-/* Summary card number */
 .summary-card p {
   margin: 0;
-  font-size: 32px;
+
+  color: var(--staff-primary);
+
+  font-size: 28px;
   font-weight: 800;
-  color: #1976d2;
+  line-height: 1.1;
 }
 
-/* White card around the table */
+.summary-detail {
+  display: block;
+  margin-top: 7px;
+
+  color: var(--text-muted);
+
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+
+/* ==========================================================
+   DASHBOARD FILTER FORM
+   ========================================================== */
+
+.dashboard-filter-form {
+  display: grid;
+
+  grid-template-columns:
+    minmax(280px, 2fr)
+    minmax(170px, 1fr)
+    minmax(170px, 1fr)
+    auto;
+
+  gap: 14px;
+  align-items: end;
+
+  margin-bottom: 20px;
+  padding: 18px;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  box-shadow: 0 4px 14px rgb(15 23 42 / 5%);
+}
+
+.filter-search-group,
+.filter-control-group {
+  min-width: 0;
+}
+
+.dashboard-filter-form label {
+  display: block;
+  margin-bottom: 6px;
+
+  color: var(--text-dark);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/*
+   website.css does not currently include search and date
+   input types, so they are fully styled here.
+*/
+.dashboard-filter-form input[type="search"],
+.dashboard-filter-form input[type="date"],
+.dashboard-filter-form select {
+  width: 100%;
+  min-height: 44px;
+  box-sizing: border-box;
+
+  margin: 0;
+  padding: 10px 12px;
+
+  background: var(--background);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+
+  color: var(--text-dark);
+
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.dashboard-filter-form input[type="search"]::placeholder {
+  color: #94a3b8;
+}
+
+.dashboard-filter-form input[type="search"]:focus,
+.dashboard-filter-form input[type="date"]:focus,
+.dashboard-filter-form select:focus {
+  outline: none;
+
+  background: var(--surface);
+  border-color: var(--staff-primary);
+
+  box-shadow: 0 0 0 4px rgb(0 21 59 / 12%);
+}
+
+
+/* Filter action buttons */
+.filter-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+
+/*
+   The more specific selector prevents global submit-button
+   rules from overriding this button.
+*/
+.dashboard-filter-form .apply-filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 18px;
+
+  background: var(--staff-primary);
+  border: 1px solid var(--staff-primary);
+  border-radius: 8px;
+
+  color: white;
+
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.dashboard-filter-form .apply-filter-button:hover,
+.dashboard-filter-form .apply-filter-button:focus-visible {
+  background: var(--staff-primary-light);
+  border-color: var(--staff-primary-light);
+}
+
+.clear-filter-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 10px 16px;
+
+  background: var(--surface);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+
+  color: var(--text-dark);
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.clear-filter-button:hover,
+.clear-filter-button:focus-visible {
+  background: var(--background);
+  border-color: #94a3b8;
+}
+
+
+/* ==========================================================
+   REPORT TABLE
+   ========================================================== */
+
 .table-card {
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   overflow-x: auto;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  box-shadow: 0 4px 14px rgb(15 23 42 / 5%);
 }
 
-/* Main report table */
 .reports-table {
   width: 100%;
+  min-width: 900px;
   border-collapse: collapse;
 }
 
-/* Table header background */
 .reports-table thead {
-  background-color: var(--staff-primary);
+  background: var(--staff-primary);
   color: white;
 }
 
-/* Table header and table cell styling */
 .reports-table th,
 .reports-table td {
   padding: 14px 16px;
-  text-align: left;
-  border-bottom: 1px solid #e8e8e8;
+
+  border-bottom: 1px solid var(--border);
+
   font-size: 14px;
+  line-height: 1.4;
+  text-align: left;
+  vertical-align: middle;
 }
 
-/* Hover effect when staff moves mouse over a report row */
-.reports-table tbody tr:hover {
-  background-color: #f7fbff;
-}
-
-/* Default status badge style */
-/* Shared style for all status badges */
-.status-badge {
-  display: inline-block;
-  padding: 6px 10px;
-  border-radius: 20px;
-  font-size: 13px;
+.reports-table th {
   font-weight: 700;
   white-space: nowrap;
 }
 
-/* New status — blue */
-.status-new {
-  background-color: #e3f2fd;
-  color: #1565c0;
+.reports-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
-/* Pending status — yellow */
-.status-pending {
-  background-color: #fff3cd;
-  color: #856404;
+.reports-table tbody tr:hover {
+  background: #f8fafc;
 }
 
-/* Approved status — green */
-.status-approved {
-  background-color: #d4edda;
-  color: #155724;
+.reports-table a {
+  color: var(--staff-primary);
+  font-weight: 700;
+  text-decoration: none;
 }
 
-/* Rejected status — red */
-.status-rejected {
-  background-color: #f8d7da;
-  color: #721c24;
+.reports-table a:hover,
+.reports-table a:focus-visible {
+  color: var(--resident-primary-hover);
+  text-decoration: underline;
 }
 
-/* In Progress status — orange */
-.status-in_progress {
-  background-color: #ffe5cc;
-  color: #9a4d00;
-}
-
-/* Closed status — grey */
-.status-closed {
-  background-color: #e2e3e5;
-  color: #41464b;
-}
-
-/* Empty table message style */
 .empty-message {
+  padding: 30px 20px;
+
+  color: var(--text-muted);
+
   text-align: center;
-  color: #666;
-  padding: 25px;
+}
+
+
+/* ==========================================================
+   STATUS BADGES
+   ========================================================== */
+
+.status-badge {
+  display: inline-block;
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.status-new {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-approved {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-in_progress {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.status-closed {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+
+/* ==========================================================
+   SEVERITY BADGES
+   ========================================================== */
+
+/* .severity-badge {
+  display: inline-block;
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+} */
+
+/* Not Assessed */
+/* .severity-n\/a {
+  /* background: #e2e8f0; */
+  /* color: #334155; */
+  /* border: 1px solid #cbd5e1; 
+} */
+
+/* Low
+.severity-low {
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+/* Medium */
+/* .severity-medium {
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+} */ */
+
+/* High */
+.severity-high {
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+
+/* ==========================================================
+   ACCESSIBILITY
+   ========================================================== */
+
+.dashboard-filter-form .apply-filter-button:focus-visible,
+.clear-filter-button:focus-visible,
+.reports-table a:focus-visible {
+  outline: 3px solid rgb(0 21 59 / 16%);
+  outline-offset: 2px;
+}
+
+
+/* ==========================================================
+   RESPONSIVE LAYOUT
+   ========================================================== */
+
+@media (max-width: 1150px) {
+  .summary-cards {
+    grid-template-columns: repeat(4, minmax(150px, 1fr));
+  }
+}
+
+
+@media (max-width: 950px) {
+  .dashboard-filter-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filter-toolbar-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+
+  body.staff-theme .header-content {
+    gap: 18px;
+  }
+
+  body.staff-theme .header-nav {
+    gap: 16px;
+  }
+}
+
+
+@media (max-width: 760px) {
+  .summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 720px) {
+  body.staff-theme .site-header {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  body.staff-theme .header-content {
+    flex-wrap: wrap;
+  }
+
+  body.staff-theme .header-logo {
+    padding-right: 16px;
+  }
+
+  body.staff-theme .header-nav {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  body.staff-theme .header-actions {
+    margin-left: auto;
+  }
+}
+
+
+@media (max-width: 620px) {
+  .dashboard-top h2 {
+    font-size: 24px;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+
+  .dashboard-filter-form {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .filter-toolbar-actions {
+    grid-column: auto;
+    width: 100%;
+  }
+
+  .dashboard-filter-form .apply-filter-button,
+  .clear-filter-button {
+    flex: 1;
+  }
+}
+
+
+@media (max-width: 420px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-toolbar-actions {
+    flex-direction: column;
+  }
+
+  .dashboard-filter-form .apply-filter-button,
+  .clear-filter-button {
+    width: 100%;
+  }
+
+  .reports-table th,
+  .reports-table td {
+    padding: 12px;
+  }
 }
