@@ -1,91 +1,193 @@
 from abc import ABC
 
-class PotholeReportState(ABC): # interface/abstract class for PotholeReportState
+
+class PotholeReportState(ABC):
     """
-    Defines all permissible actions/transitions
+    Base State class.
+
+    Each method represents a possible status transition.
+    Concrete State classes override only the transitions
+    that are allowed from that state.
     """
 
-    def approve(self, report, severity):
-        raise ValueError("This report cannot be approved.")
+    def approve(self, report, severity=None):
+        raise ValueError(
+            f"A report in '{report.current_status}' status "
+            "cannot be approved."
+        )
 
     def reject(self, report):
-        raise ValueError("This report cannot be rejected.")
+        raise ValueError(
+            f"A report in '{report.current_status}' status "
+            "cannot be rejected."
+        )
 
     def start_work(self, report):
-        raise ValueError("Work cannot be started.")
+        raise ValueError(
+            f"Work cannot be started while the report is "
+            f"'{report.current_status}'."
+        )
 
     def pend(self, report):
-        raise ValueError("This report cannot be moved to Pending.")
+        raise ValueError(
+            f"A report in '{report.current_status}' status "
+            "cannot be moved to Pending."
+        )
 
     def close(self, report):
-        raise ValueError("This report cannot be closed.")
+        raise ValueError(
+            f"A report in '{report.current_status}' status "
+            "cannot be closed."
+        )
 
-    def prevent_transition_to_new(self, report):
-        raise ValueError("A report cannot be moved back to New state.")
-    
     @property
     def map_icon_color(self):
-        return "gray"  # Default fallback
+        """
+        Default map-marker colour.
+        """
 
-# concrete states - define allowed transitions for each state. if not there, then error
-class NewState(PotholeReportState): # first state of a report, when it is first submitted
-    def approve(self, report, severity): 
-        if severity not in ['low', 'medium', 'high']:
-            raise ValueError("A valid severity must be assigned upon approval.")
+        return "gray"
+
+
+# ==========================================================
+# NEW STATE
+#
+# Allowed:
+# New -> Approved
+# New -> Rejected
+# ==========================================================
+
+class NewState(PotholeReportState):
+
+    def approve(self, report, severity=None):
+        valid_severities = {
+            "low",
+            "medium",
+            "high",
+        }
+
+        if severity not in valid_severities:
+            raise ValueError(
+                "A valid severity must be assigned "
+                "when approving a report."
+            )
+
         report.severity = severity
-        report.set_state("approved")
+        report._set_state("approved")
 
     def reject(self, report):
-        report.set_state("rejected")
+        report._set_state("rejected")
 
     @property
     def map_icon_color(self):
         return "blue"
 
-class RejectedState(PotholeReportState):
-    @property
-    def map_icon_color(self):
-        return "red"
+
+# ==========================================================
+# APPROVED STATE
+#
+# Allowed:
+# Approved -> In Progress
+# Approved -> Pending
+# ==========================================================
 
 class ApprovedState(PotholeReportState):
+
     def start_work(self, report):
-        report.set_state("in_progress")
+        report._set_state("in_progress")
 
     def pend(self, report):
-        report.set_state("pending")
+        report._set_state("pending")
 
     @property
     def map_icon_color(self):
         return "green"
 
-class PendingState(PotholeReportState):
-    def start_work(self, report):
-        report.set_state("in_progress")
+
+# ==========================================================
+# REJECTED STATE
+#
+# Final state: no further transitions
+# ==========================================================
+
+class RejectedState(PotholeReportState):
 
     @property
     def map_icon_color(self):
-        return "yellow" 
+        return "red"
+
+
+# ==========================================================
+# PENDING STATE
+#
+# Allowed:
+# Pending -> In Progress
+# ==========================================================
+
+class PendingState(PotholeReportState):
+
+    def start_work(self, report):
+        report._set_state("in_progress")
+
+    @property
+    def map_icon_color(self):
+        return "yellow"
+
+
+# ==========================================================
+# IN PROGRESS STATE
+#
+# Allowed:
+# In Progress -> Pending
+# In Progress -> Closed
+# ==========================================================
 
 class InProgressState(PotholeReportState):
+
+    def pend(self, report):
+        report._set_state("pending")
+
     def close(self, report):
-        report.set_state("closed")
+        report._set_state("closed")
 
     @property
     def map_icon_color(self):
-        return "orange"  
+        return "orange"
+
+
+# ==========================================================
+# CLOSED STATE
+#
+# Final state: no further transitions
+# ==========================================================
 
 class ClosedState(PotholeReportState):
+
     @property
     def map_icon_color(self):
-        return "dark-grey" 
+        return "dark-grey"
 
-def get_state(status): # helper function
-    states = {
-        "new": NewState(),
-        "approved": ApprovedState(),
-        "rejected": RejectedState(),
-        "pending": PendingState(),
-        "in_progress": InProgressState(),
-        "closed": ClosedState(),
-    }
-    return states.get(status, NewState())
+
+# Create one reusable object for each concrete State.
+STATE_MAP = {
+    "new": NewState(),
+    "approved": ApprovedState(),
+    "rejected": RejectedState(),
+    "pending": PendingState(),
+    "in_progress": InProgressState(),
+    "closed": ClosedState(),
+}
+
+
+def get_state(status):
+    """
+    Return the concrete State object matching the stored status.
+    """
+
+    try:
+        return STATE_MAP[status]
+
+    except KeyError as error:
+        raise ValueError(
+            f"Unknown pothole report status: {status}"
+        ) from error
