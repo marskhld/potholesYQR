@@ -1,95 +1,103 @@
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.core.mail import send_mail
-from django.db import transaction
-from django.shortcuts import get_object_or_404, redirect, render
+
+
+# Django shortcuts for loading pages, redirecting, and finding objects
+from django.shortcuts import render, redirect, get_object_or_404
+# Used for multi-field OR filtering in the dashboard search
+from django.db.models import Q, Count
+
+# Used to generate named URLs
 from django.urls import reverse
 
-from .forms import PotholeReportForm, ResidentForm
+# Used to send resident confirmation emails
+from django.core.mail import send_mail
+
+# Used to validate staff-edited email addresses
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
+# Used to keep related database operations together
+from django.db import transaction
+
+# Django authentication functions
+from django.contrib.auth import authenticate, login, logout
+
+# Protects staff pages from unauthenticated access
+from django.contrib.auth.decorators import login_required
+
+# Project utility and forms
+from .utils import geocode_address
+from .forms import ResidentForm, PotholeReportForm
+
+# Database models used by resident and staff pages
 from .models import (
-    Photo,
-    PotholeReport,
     Resident,
     Staff,
+    PotholeReport,
+    Photo,
     StatusHistory,
 )
-from .utils import geocode_address
 
-
+# Create your views here.
 def submit_report(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         resident_form = ResidentForm(request.POST)
         report_form = PotholeReportForm(request.POST, request.FILES)
 
         if resident_form.is_valid() and report_form.is_valid():
-            # Geocode the address using the utility function
-            address = report_form.cleaned_data["address"]
-            coordinates = geocode_address(address)
 
+            # Geocode the address using the utility function
+            address = report_form.cleaned_data['address']
+            coordinates = geocode_address(address)
+            
             if coordinates is None:
                 report_form.add_error(
-                    "address",
-                    "We couldn't locate this address. Please check the spelling or provide a more specific location.",
+                    'address',
+                    "We couldn't locate this address. Please check the spelling or provide a more specific location."
                 )
             else:
-                with (
-                    transaction.atomic()
-                ):  # ensure atomicity of the following operations
-                    resident, _ = (
-                        Resident.objects.get_or_create(  # checks if resident already exists (avoid duplicates)
-                            email=resident_form.cleaned_data["email"],
+                with transaction.atomic():  # ensure atomicity of the following operations
+                    resident, _ = Resident.objects.get_or_create( # checks if resident already exists (avoid duplicates)
+                        email=resident_form.cleaned_data['email'],
                             defaults={
-                                "name": resident_form.cleaned_data["name"],
-                                "phone_number": resident_form.cleaned_data[
-                                    "phone_number"
-                                ],
-                            },
-                        )
+                                'name': resident_form.cleaned_data['name'],
+                                'phone_number': resident_form.cleaned_data['phone_number']
+                            }
                     )
 
                     report = report_form.save(commit=False)
                     report.resident = resident
-                    report.latitude = coordinates["latitude"]
-                    report.longitude = coordinates["longitude"]
+                    report.latitude = coordinates['latitude']
+                    report.longitude = coordinates['longitude']
                     report.save()
-
-                    for photo in request.FILES.getlist("photos")[:5]:
+    
+                    for photo in request.FILES.getlist('photos')[:5]:
                         Photo.objects.create(report=report, file_path=photo)
 
                 send_mail(
-                    subject="Pothole Report Confirmation",
-                    message=f"Thank you for reporting the pothole. Your report has been received and is being processed. Your ticket number is {report.ticket_number}.",
-                    from_email="noreply@potholesyqr.com",
+                    subject='Pothole Report Confirmation',
+                    message=f'Thank you for reporting the pothole. Your report has been received and is being processed. Your ticket number is {report.ticket_number}.',
+                    from_email='noreply@potholesyqr.com',
                     recipient_list=[resident.email],
-                    fail_silently=False,  # for debugging, will raise an error if email fails to send
+                    fail_silently=False, # for debugging, will raise an error if email fails to send
                 )
                 # TODO: create email notification entry in the Notification model for record-keeping
-                return redirect(
-                    "report_confirmation", ticket=report.ticket_number
-                )  # Redirect to a success page after submission
-
+                return redirect('report_confirmation', ticket=report.ticket_number)  # Redirect to a success page after submission
+            
     else:
         resident_form = ResidentForm()
         report_form = PotholeReportForm()
-
-    return render(
-        request,
-        "reports/submit_report.html",
-        {
-            "resident_form": resident_form,
-            "report_form": report_form,
-        },
-    )
-
-
+            
+    return render(request, 'reports/submit_report.html', {
+        'resident_form': resident_form,
+        'report_form': report_form,
+    })
+        
 def report_confirmation(request, ticket):
-    report = get_object_or_404(
-        PotholeReport, ticket_number=ticket
-    )  # if pothole report exists, show report. else, return 404 error
-    return render(request, "reports/report_confirmation.html", {"report": report})
+    report = get_object_or_404(PotholeReport, ticket_number=ticket) # if pothole report exists, show report. else, return 404 error
+    return render(request, 'reports/report_confirmation.html', {'report': report})
 
 
-# Staff login page     DP
+# Staff login page     DP 
 def staff_login(request):
     # If the user is already logged in and is a staff user,
     # send them directly to the staff dashboard.
@@ -98,6 +106,7 @@ def staff_login(request):
 
     # If the staff login form is submitted
     if request.method == "POST":
+
         # Get username entered in the login form
         username = request.POST.get("username")
 
@@ -109,6 +118,7 @@ def staff_login(request):
 
         # If user exists and is marked as staff, allow login
         if user is not None and user.is_staff:
+
             # Log the staff user into the session
             login(request, user)
 
@@ -116,11 +126,9 @@ def staff_login(request):
             return redirect("staff_dashboard")
 
         # If login fails, show error on staff login page
-        return render(
-            request,
-            "reports/staff_login.html",
-            {"error": "Invalid staff username or password."},
-        )
+        return render(request, "reports/staff_login.html", {
+            "error": "Invalid staff username or password."
+        })
 
     # If page is opened normally using GET request,
     # simply display the staff login page
@@ -128,36 +136,126 @@ def staff_login(request):
 
 
 # Staff dashboard page
+# Staff dashboard page
 @login_required(login_url="staff_login")
 def staff_dashboard(request):
 
-    # If logged-in user is not staff, send them back to staff login
+    # Prevent authenticated non-staff users from opening the dashboard
     if not request.user.is_staff:
-        # Redirect non-staff users to staff login page
         return redirect("staff_login")
 
-    # Get all submitted pothole reports from the database
-    # select_related("resident") also fetches resident details with each report
-    # order_by("-created_date") shows the newest submitted report first
-    reports = PotholeReport.objects.select_related("resident").order_by("-created_date")
+    # Load all reports and their connected resident records
+    reports = (
+        PotholeReport.objects
+        .select_related("resident")
+        .order_by("-created_date")
+    )
 
-    # Count total number of submitted pothole reports
-    total_reports = reports.count()
+    # Count all reports and reports in each status
+    report_counts = PotholeReport.objects.aggregate(
+        total_reports=Count("id"),
 
-    # Prepare data to send from views.py to staff_dashboard.html
+        new_reports=Count(
+            "id",
+            filter=Q(current_status="new"),
+        ),
+
+        approved_reports=Count(
+            "id",
+            filter=Q(current_status="approved"),
+        ),
+
+        rejected_reports=Count(
+            "id",
+            filter=Q(current_status="rejected"),
+        ),
+
+        in_progress_reports=Count(
+            "id",
+            filter=Q(current_status="in_progress"),
+        ),
+
+        pending_reports=Count(
+            "id",
+            filter=Q(current_status="pending"),
+        ),
+
+        closed_reports=Count(
+            "id",
+            filter=Q(current_status="closed"),
+        ),
+    )
+
+    # Read dashboard filters from the URL
+    search = request.GET.get(
+        "search",
+        "",
+    ).strip()
+
+    status = request.GET.get(
+        "status",
+        "",
+    ).strip()
+
+    submitted_date = request.GET.get(
+        "submitted_date",
+        "",
+    ).strip()
+
+    # Search across ticket, resident, email, phone, and address
+    if search:
+        reports = reports.filter(
+            Q(ticket_number__icontains=search)
+            | Q(resident__name__icontains=search)
+            | Q(resident__email__icontains=search)
+            | Q(resident__phone_number__icontains=search)
+            | Q(address__icontains=search)
+        )
+
+    # Filter by exact report status
+    if status:
+        reports = reports.filter(
+            current_status=status,
+        )
+
+    # Filter by submitted calendar date
+    if submitted_date:
+        reports = reports.filter(
+            created_date__date=submitted_date,
+        )
+
+    # Count reports remaining after filters are applied
+    filtered_reports = reports.count()
+
     context = {
-        # Send all pothole reports to the dashboard template
+        # Filtered report list displayed in the table
         "reports": reports,
-        # Send total report count to the dashboard template
-        "total_reports": total_reports,
+
+        # Number of reports currently shown in the table
+        "filtered_reports": filtered_reports,
+
+        # Values used by the status filter
+        "status_choices": PotholeReport.STATUS_CHOICES,
+
+        # Preserve the selected filter values
+        "filters": {
+            "search": search,
+            "status": status,
+            "submitted_date": submitted_date,
+        },
+
+        # Add all report totals to the template
+        **report_counts,
     }
 
-    # Load staff_dashboard.html and pass report data to it
-    return render(request, "reports/staff_dashboard.html", context)
-
+    return render(
+        request,
+        "reports/staff_dashboard.html",
+        context,
+    )
 
 # Staff report detail page
-# Only authenticated staff users can open and update a report
+# Authorized staff can review and update report information
 @login_required(login_url="staff_login")
 def staff_report_detail(request, ticket):
 
@@ -165,171 +263,432 @@ def staff_report_detail(request, ticket):
     if not request.user.is_staff:
         return redirect("staff_login")
 
-    # Find one report using its unique ticket number
-    # select_related gets the connected resident efficiently
-    # prefetch_related gets the connected photos efficiently
+    # Load the report, connected resident, and submitted photos
     report = get_object_or_404(
-        PotholeReport.objects.select_related("resident").prefetch_related("photo_set"),
+        PotholeReport.objects
+        .select_related("resident")
+        .prefetch_related("photo_set"),
         ticket_number=ticket,
     )
 
-    # Get allowed status options from the model
-    status_choices = PotholeReport.STATUS_CHOICES
+    resident = report.resident
 
-    # Get allowed severity options from the severity field
-    severity_choices = PotholeReport._meta.get_field("severity").choices
+    # Get only the valid next statuses for the report's current state.
+    allowed_status_choices = report.get_allowed_status_choices()
 
-    # Create sets of valid database values for validation
-    valid_statuses = {value for value, _ in status_choices}
+    # Include the current status so staff can save without changing it.
+    status_choices = [
+        (
+            report.current_status,
+            report.get_current_status_display(),
+        ),
+        *allowed_status_choices,
+    ]
 
-    valid_severities = {value for value, _ in severity_choices}
+    # Severity choices from the model
+    severity_choices = PotholeReport.SEVERITY_CHOICES
 
-    # No error is shown when the page first opens
+    # Valid values used for server-side validation
+    valid_statuses = {
+        value for value, _ in status_choices
+    }
+
+    valid_severities = {
+        value for value, _ in severity_choices
+    }
+
+    # True when at least one next status is available
+    has_available_transitions = bool(
+        allowed_status_choices
+    )
+
+    # Display submitted details in edit mode with ?edit=1
+    edit_mode = request.GET.get("edit") == "1"
+
     update_error = None
 
     if request.method == "POST":
-        # Get the selected status from the form
+
+        # Read resident information
+        new_resident_name = request.POST.get(
+            "resident_name",
+            resident.name,
+        ).strip()
+
+        new_resident_email = request.POST.get(
+            "resident_email",
+            resident.email,
+        ).strip()
+
+        new_resident_phone = request.POST.get(
+            "resident_phone",
+            resident.phone_number,
+        ).strip()
+
+        # Read report information
+        new_address = request.POST.get(
+            "address",
+            report.address,
+        ).strip()
+
+        new_description = request.POST.get(
+            "description",
+            report.description,
+        ).strip()
+
         new_status = request.POST.get(
             "current_status",
             report.current_status,
-        )
+        ).strip()
 
-        # Get the selected severity from the form
         new_severity = request.POST.get(
             "severity",
             report.severity,
-        )
+        ).strip()
 
-        # Get and clean the internal staff notes
         new_staff_notes = request.POST.get(
             "staff_notes",
-            "",
+            report.staff_notes,
         ).strip()
 
-        # Get and clean the public/resolution notes
         new_public_notes = request.POST.get(
             "public_notes",
+            report.public_notes,
+        ).strip()
+
+        new_edit_reason = request.POST.get(
+            "edit_reason",
             "",
         ).strip()
 
-        # Check whether the submitted status is valid
-        if new_status not in valid_statuses:
-            update_error = "The selected report status is invalid."
+        # Basic validation
+        if not new_resident_name:
+            update_error = "Resident name cannot be empty."
 
-        # Check whether the submitted severity is valid
+        elif not new_resident_email:
+            update_error = "Resident email cannot be empty."
+
+        elif not new_resident_phone:
+            update_error = "Resident phone number cannot be empty."
+
+        elif not new_address:
+            update_error = "Report address cannot be empty."
+
+        elif not new_description:
+            update_error = "Report description cannot be empty."
+
+        elif new_status not in valid_statuses:
+            update_error = (
+                "The selected status transition is not allowed "
+                "from the report's current status."
+            )
+
         elif new_severity not in valid_severities:
             update_error = "The selected severity is invalid."
 
-        # Continue when all submitted values are valid
         else:
-            # Store the previous values before updating the report
+            try:
+                validate_email(new_resident_email)
+
+            except ValidationError:
+                update_error = (
+                    "Enter a valid resident email address."
+                )
+
+        if update_error is None:
+
+            # Save previous values for comparison and history
+            old_resident_name = resident.name
+            old_resident_email = resident.email
+            old_resident_phone = resident.phone_number
+
+            old_address = report.address
+            old_description = report.description
+            old_latitude = report.latitude
+            old_longitude = report.longitude
             old_status = report.current_status
             old_severity = report.severity
             old_staff_notes = report.staff_notes
             old_public_notes = report.public_notes
 
-            # Check whether staff changed anything
-            changes_made = (
-                old_status != new_status
-                or old_severity != new_severity
-                or old_staff_notes != new_staff_notes
-                or old_public_notes != new_public_notes
+            submitted_details_changed = (
+                old_resident_name != new_resident_name
+                or old_resident_email != new_resident_email
+                or old_resident_phone != new_resident_phone
+                or old_address != new_address
+                or old_description != new_description
             )
 
-            # Generate the current detail-page URL
-            detail_url = reverse(
-                "staff_report_detail",
-                kwargs={"ticket": report.ticket_number},
+            address_changed = (
+                old_address != new_address
             )
 
-            if changes_made:
-                try:
-                    # Keep the report update and history record together
-                    with transaction.atomic():
-                        # state transition machine - for state changes only
-                        if old_status != new_status:
-                            if new_status == "approved":
-                                report.approve(severity=new_severity)
-                            elif new_status == "rejected":
-                                report.reject()
-                            elif new_status == "in_progress":
-                                report.start_work()
-                            elif new_status == "pending":
-                                report.pend()
-                            elif new_status == "closed":
-                                report.close()
-                            elif new_status == "new":
-                                report.prevent_transition_to_new()
+            new_coordinates = None
 
-                        # update & save remaining report info
-                        report.severity = new_severity
-                        report.staff_notes = new_staff_notes
-                        report.public_notes = new_public_notes
-                        report.save()
+            if address_changed:
+                new_coordinates = geocode_address(
+                    new_address
+                )
 
-                    # Find or create a Staff profile
-                    staff_profile, _ = Staff.objects.get_or_create(
-                        username=request.user.username,
-                        defaults={
-                            "name": (
-                                request.user.get_full_name() or request.user.username
+                if new_coordinates is None:
+                    update_error = (
+                        "The updated address could not be located. "
+                        "Please enter a more specific address."
+                    )
+
+            if (
+                update_error is None
+                and submitted_details_changed
+                and not new_edit_reason
+            ):
+                update_error = (
+                    "Enter a reason when changing submitted "
+                    "report details."
+                )
+
+            if update_error is None:
+
+                change_messages = []
+
+                if old_resident_name != new_resident_name:
+                    change_messages.append(
+                        f'Resident name changed from '
+                        f'"{old_resident_name}" to '
+                        f'"{new_resident_name}".'
+                    )
+
+                if old_resident_email != new_resident_email:
+                    change_messages.append(
+                        f'Resident email changed from '
+                        f'"{old_resident_email}" to '
+                        f'"{new_resident_email}".'
+                    )
+
+                if old_resident_phone != new_resident_phone:
+                    change_messages.append(
+                        f'Resident phone changed from '
+                        f'"{old_resident_phone}" to '
+                        f'"{new_resident_phone}".'
+                    )
+
+                if old_address != new_address:
+                    change_messages.append(
+                        f'Address changed from '
+                        f'"{old_address}" to '
+                        f'"{new_address}".'
+                    )
+
+                if old_description != new_description:
+                    change_messages.append(
+                        "Report description was updated."
+                    )
+
+                if old_status != new_status:
+                    old_status_label = dict(
+                        PotholeReport.STATUS_CHOICES
+                    ).get(old_status, old_status)
+
+                    new_status_label = dict(
+                        PotholeReport.STATUS_CHOICES
+                    ).get(new_status, new_status)
+
+                    change_messages.append(
+                        f'Status changed from '
+                        f'"{old_status_label}" to '
+                        f'"{new_status_label}".'
+                    )
+
+                if old_severity != new_severity:
+                    old_severity_label = dict(
+                        PotholeReport.SEVERITY_CHOICES
+                    ).get(old_severity, old_severity)
+
+                    new_severity_label = dict(
+                        PotholeReport.SEVERITY_CHOICES
+                    ).get(new_severity, new_severity)
+
+                    change_messages.append(
+                        f'Severity changed from '
+                        f'"{old_severity_label}" to '
+                        f'"{new_severity_label}".'
+                    )
+
+                if old_staff_notes != new_staff_notes:
+                    change_messages.append(
+                        "Internal staff notes were updated."
+                    )
+
+                if old_public_notes != new_public_notes:
+                    change_messages.append(
+                        "Public resolution notes were updated."
+                    )
+
+                if new_edit_reason:
+                    change_messages.append(
+                        f'Edit reason: "{new_edit_reason}".'
+                    )
+
+                changes_made = bool(change_messages)
+
+                detail_url = reverse(
+                    "staff_report_detail",
+                    kwargs={
+                        "ticket": report.ticket_number,
+                    },
+                )
+
+                if changes_made:
+
+                    try:
+                        with transaction.atomic():
+
+                            # Update resident information
+                            resident.name = new_resident_name
+                            resident.email = new_resident_email
+                            resident.phone_number = (
+                                new_resident_phone
                             )
-                        },
-                    )
+                            resident.save()
 
-                    StatusHistory.objects.create(
-                        report=report,
-                        old_status=old_status,
-                        new_status=new_status,
-                        changed_by=staff_profile,
-                        staff_notes=new_staff_notes,
-                        public_notes=new_public_notes,
-                    )
+                            # Update report information other than status
+                            report.address = new_address
+                            report.description = new_description
+                            report.severity = new_severity
+                            report.staff_notes = new_staff_notes
+                            report.public_notes = new_public_notes
 
-                    return redirect(f"{detail_url}?updated=1")  # successful!
+                            if address_changed:
+                                report.latitude = (
+                                    new_coordinates["latitude"]
+                                )
+                                report.longitude = (
+                                    new_coordinates["longitude"]
+                                )
 
-                except ValueError as e:  # catch state transition errors
-                    update_error = str(e)
+                                change_messages.append(
+                                    f"Coordinates recalculated from "
+                                    f"{old_latitude}, "
+                                    f"{old_longitude} to "
+                                    f"{report.latitude}, "
+                                    f"{report.longitude}."
+                                )
 
-            else:
-                return redirect(
-                    detail_url
-                )  # Return without success message if nothing changed
+                            # Use the State pattern for status changes
+                            if old_status != new_status:
+                                report.transition_to(
+                                    new_status,
+                                    severity=new_severity,
+                                )
+                            else:
+                                report.save()
 
-    # Load all previous staff updates for this report
+                            # Find or create staff profile
+                            staff_profile, _ = (
+                                Staff.objects.get_or_create(
+                                    username=(
+                                        request.user.username
+                                    ),
+                                    defaults={
+                                        "name": (
+                                            request.user
+                                            .get_full_name()
+                                            or request.user.username
+                                        )
+                                    },
+                                )
+                            )
+
+                            # Determine activity category
+                            if address_changed:
+                                activity_type = (
+                                    "location_updated"
+                                )
+
+                            elif submitted_details_changed:
+                                activity_type = (
+                                    "details_updated"
+                                )
+
+                            elif old_status != new_status:
+                                activity_type = (
+                                    "status_updated"
+                                )
+
+                            elif old_severity != new_severity:
+                                activity_type = (
+                                    "severity_updated"
+                                )
+
+                            else:
+                                activity_type = (
+                                    "notes_updated"
+                                )
+
+                            StatusHistory.objects.create(
+                                report=report,
+                                activity_type=activity_type,
+                                old_status=old_status,
+                                new_status=new_status,
+                                changed_by=staff_profile,
+                                change_details=" ".join(
+                                    change_messages
+                                ),
+                                staff_notes=new_staff_notes,
+                                public_notes=new_public_notes,
+                            )
+
+                    except ValueError as error:
+                        update_error = str(error)
+
+                    else:
+                        return redirect(
+                            f"{detail_url}?updated=1"
+                        )
+
+                else:
+                    return redirect(detail_url)
+
+        if update_error:
+            edit_mode = True
+
+    # Load activity history
     status_history = (
-        StatusHistory.objects.filter(report=report)
+        StatusHistory.objects
+        .filter(report=report)
         .select_related("changed_by")
         .order_by("-changed_at")
     )
 
-    # Create a mapping from stored status codes to readable labels
-    status_label_map = dict(PotholeReport.STATUS_CHOICES)
+    status_label_map = dict(
+        PotholeReport.STATUS_CHOICES
+    )
 
-    # Add a readable status label to every history record
     for entry in status_history:
         entry.display_status = status_label_map.get(
             entry.new_status,
             entry.new_status,
         )
 
-    # Prepare information for staff_report_detail.html
     context = {
         "report": report,
         "status_choices": status_choices,
         "severity_choices": severity_choices,
         "status_history": status_history,
         "update_error": update_error,
-        "update_success": request.GET.get("updated") == "1" and not update_error,
+        "update_success": (
+            request.GET.get("updated") == "1"
+        ),
+        "edit_mode": edit_mode,
+        "has_available_transitions": (
+            has_available_transitions
+        ),
     }
 
-    # Display the staff report detail template
     return render(
         request,
         "reports/staff_report_detail.html",
         context,
     )
-
 
 # Staff logout function
 def staff_logout(request):

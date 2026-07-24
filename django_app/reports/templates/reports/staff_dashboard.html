@@ -1,104 +1,363 @@
 {% extends "reports/base.html" %}
 {% load static %}
 
+
 {% block title %}
   Staff Dashboard | Potholes YQR
 {% endblock title %}
 
-{# Dashboard-specific CSS file #}
+
+{% block body_class %}
+  staff-theme
+{% endblock body_class %}
+
+
 {% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/staff_dashboard.css' %}">
+  <link
+    rel="stylesheet"
+    href="{% static 'css/staff_dashboard.css' %}"
+  />
 {% endblock extra_css %}
 
-{# styling class for body #}
-{% block body_class %}staff-theme{% endblock body_class %}
 
-{# header stuff #}
 {% block header_logo %}
-  <a href="{% url 'staff_dashboard' %}" class="header-logo">
-    <img src="{% static 'images/staff-logo.png' %}"
-         alt="Potholes YQR Staff Portal"
-         class="header-icon" />
+  <a
+    href="{% url 'submit_report' %}"
+    class="header-logo"
+    aria-label="Go to the pothole report page"
+  >
+    <img
+      src="{% static 'images/staff-logo.png' %}"
+      alt="Potholes YQR"
+      class="header-icon"
+    />
   </a>
 {% endblock header_logo %}
+
 
 {% block header_title %}
   Staff Dashboard
 {% endblock header_title %}
 
+
 {% block header_subtitle %}
   Review submitted pothole reports and manage their progress.
 {% endblock header_subtitle %}
 
-{% block header_nav %}{# empty #}{% endblock header_nav %}
+
+{% block header_nav %}
+{% endblock header_nav %}
+
 
 {% block header_actions %}
-  <a href="{% url 'staff_logout' %}" class="header-logout-link">Logout</a>
+  <a
+    href="{% url 'staff_logout' %}"
+    class="header-logout-link"
+  >
+    Logout
+  </a>
 {% endblock header_actions %}
 
-{# Main page content #}
+
 {% block content %}
 
   <section class="dashboard-container">
+
     <div class="dashboard-top">
-      <div>
-        <h2>Submitted Pothole Reports</h2>
-        <p class="dashboard-note">
-          Staff can review resident-submitted reports, check ticket numbers,
-          verify report details, and update report status later.
-        </p>
-      </div>
+
+      <h2>
+        Submitted Pothole Reports
+      </h2>
+
+      <p class="dashboard-note">
+        Staff can review resident-submitted reports, check ticket numbers,
+        verify report details, and update report status.
+      </p>
+
     </div>
 
+
+    {# Report summary counts #}
     <div class="summary-cards">
+
       <div class="summary-card">
         <h3>Total Reports</h3>
+
         <p>{{ total_reports }}</p>
+
+        {% if filtered_reports != total_reports %}
+          <span class="summary-detail">
+            Showing {{ filtered_reports }}
+            filtered report{{ filtered_reports|pluralize }}
+          </span>
+        {% else %}
+          <span class="summary-detail">
+            All submitted reports
+          </span>
+        {% endif %}
       </div>
+
+
+      <div class="summary-card">
+        <h3>New</h3>
+
+        <p>{{ new_reports }}</p>
+
+        <span class="summary-detail">
+          Awaiting staff review
+        </span>
+      </div>
+
+
+      <div class="summary-card">
+        <h3>Approved</h3>
+
+        <p>{{ approved_reports }}</p>
+
+        <span class="summary-detail">
+          Approved reports
+        </span>
+      </div>
+
+
+      <div class="summary-card">
+        <h3>Rejected</h3>
+
+        <p>{{ rejected_reports }}</p>
+
+        <span class="summary-detail">
+          Rejected reports
+        </span>
+      </div>
+
+
+      <div class="summary-card">
+        <h3>In Progress</h3>
+
+        <p>{{ in_progress_reports }}</p>
+
+        <span class="summary-detail">
+          Work currently underway
+        </span>
+      </div>
+
+
+      <div class="summary-card">
+        <h3>Pending</h3>
+
+        <p>{{ pending_reports }}</p>
+
+        <span class="summary-detail">
+          Waiting for further action
+        </span>
+      </div>
+
+
+      <div class="summary-card">
+        <h3>Closed</h3>
+
+        <p>{{ closed_reports }}</p>
+
+        <span class="summary-detail">
+          Completed reports
+        </span>
+      </div>
+
     </div>
 
+
+    {# Staff dashboard filters #}
+    <form
+      method="get"
+      action="{% url 'staff_dashboard' %}"
+      class="dashboard-filter-form"
+    >
+
+      <div class="filter-search-group">
+
+        <label for="dashboard-search">
+          Search Reports
+        </label>
+
+        <input
+          type="search"
+          id="dashboard-search"
+          name="search"
+          value="{{ filters.search }}"
+          placeholder="Ticket, name, email, phone, or address"
+        />
+
+      </div>
+
+
+      <div class="filter-control-group">
+
+        <label for="status-filter">
+          Status
+        </label>
+
+        <select
+          id="status-filter"
+          name="status"
+        >
+
+          <option value="">
+            All statuses
+          </option>
+
+          {% for value, label in status_choices %}
+
+            <option
+              value="{{ value }}"
+              {% if filters.status == value %}selected{% endif %}
+            >
+              {{ label }}
+            </option>
+
+          {% endfor %}
+
+        </select>
+
+      </div>
+
+
+      <div class="filter-control-group">
+
+        <label for="date-filter">
+          Date Submitted
+        </label>
+
+        <input
+          type="date"
+          id="date-filter"
+          name="submitted_date"
+          value="{{ filters.submitted_date }}"
+        />
+
+      </div>
+
+
+      <div class="filter-toolbar-actions">
+
+        <button
+          type="submit"
+          class="apply-filter-button"
+        >
+          Search
+        </button>
+
+        <a
+          href="{% url 'staff_dashboard' %}"
+          class="clear-filter-button"
+        >
+          Clear
+        </a>
+
+      </div>
+
+    </form>
+
+
+    {# Submitted reports table #}
     <div class="table-card">
 
       <table class="reports-table">
+
         <thead>
+
           <tr>
-            <th>Ticket Number</th>
-            <th>Resident Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Address</th>
-            <th>Status</th>
-            <th>Date Submitted</th>
+            <th scope="col">Ticket Number</th>
+            <th scope="col">Resident Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Address</th>
+            <th scope="col">Status</th>
+            <th scope="col">Severity</th>
+            <th scope="col">Date Submitted</th>
           </tr>
+
         </thead>
 
+
         <tbody>
+
           {% for report in reports %}
+
             <tr>
+
               <td>
-                {# Open the full report detail page using the ticket number #}
-                <a href="{% url 'staff_report_detail' report.ticket_number %}"
-                   class="ticket-link">{{ report.ticket_number }}</a>
+                <a
+                  href="{% url 'staff_report_detail' report.ticket_number %}"
+                  class="ticket-link"
+                >
+                  {{ report.ticket_number }}
+                </a>
               </td>
-              <td>{{ report.resident.name }}</td>
-              <td>{{ report.resident.email }}</td>
-              <td>{{ report.resident.phone_number }}</td>
-              <td>{{ report.address }}</td>
+
+
               <td>
-                <span class="status-badge status-{{ report.current_status }}">{{ report.get_current_status_display }}</span>
+                {{ report.resident.name }}
               </td>
-              <td>{{ report.created_date|date:"M d, Y h:i A" }}</td>
+
+
+              <td>
+                {{ report.resident.email }}
+              </td>
+
+
+              <td>
+                {{ report.resident.phone_number }}
+              </td>
+
+
+              <td>
+                {{ report.address }}
+              </td>
+
+
+              <td>
+                <span
+                  class="status-badge status-{{ report.current_status }}"
+                >
+                  {{ report.get_current_status_display }}
+                </span>
+              </td>
+
+
+              <td>
+                <span
+                  class="severity-badge severity-{{ report.severity }}"
+                >
+                  {{ report.get_severity_display }}
+                </span>
+              </td>
+
+
+              <td>
+                {{ report.created_date|date:"M d, Y h:i A" }}
+              </td>
+
             </tr>
 
           {% empty %}
+
             <tr>
-              <td colspan="7" class="empty-message">No pothole reports have been submitted yet.</td>
+              <td
+                colspan="8"
+                class="empty-message"
+              >
+                No pothole reports match the selected filters.
+              </td>
             </tr>
+
           {% endfor %}
 
         </tbody>
+
       </table>
+
     </div>
+
   </section>
 
 {% endblock content %}
