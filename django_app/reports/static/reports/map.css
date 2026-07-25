@@ -70,12 +70,14 @@ main {
     height: 16px;
 }
 
+/* Adjusted background color of filter ribbon */
+
 .map-filters {
    /*  padding: 10px;
     background: #fff;
     border-bottom: 1px solid #ddd; */
 
-    background-color: #1976d2;
+    background-color: #00153b;
     color: white;
     padding: 10px 16px;
     /* border-radius: 10px; */

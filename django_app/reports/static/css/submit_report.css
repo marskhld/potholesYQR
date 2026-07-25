@@ -14,7 +14,37 @@
     height: 400px;   
     width: 100%;
     margin-top: 10px;
-    
+} 
+
+/* Added styling for address suggestions dropdown */
+
+.address-suggestions {
+    border: 1px solid #ccc;
+    border-top: none;
+    background: white;
+    max-height: 200px;
+    overflow-y: auto;
+    position: relative;
+    z-index: 1000;
+}
+ 
+.address-suggestion {
+    padding: 8px 10px;
+    cursor: pointer;
+}
+ 
+.address-suggestion:hover {
+    background-color: #f2f2f2;
+}
+
+/* Pushed button to the right side on the form */
+
+.map-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .page-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -156,6 +186,8 @@ button[type="submit"] {
   padding: 14px;
   font-size: 18px;
   font-weight: 600;
+  max-width: 100%;
+  box-sizing: border-box;
   min-width: 220px;
   transition: background-color 0.2s ease;
 }
@@ -174,6 +206,16 @@ h2 {
 body {
   background: #f4f6f8;
 }
+
+/* Fixed map overlapping header with sticky, top and z-index */
+
+.site-header {
+    padding-right: 20px;
+    padding-left: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1001;
+  }
 
 .help-text {
   font-size: 14px;

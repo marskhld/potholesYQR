@@ -2,7 +2,7 @@
 # Course:      CS 476
 # Project:     PotholesYQR
 # File:        map.js
-# Description: This is a javascript code that uses Leaflet.js to show the pothole map and provides the functionality.
+# Description: This is javascript code that uses Leaflet.js to show the pothole map and provides the functionality for interface for residents.
 #              The functions below are based on the code provided by Leaflet.js.
 # Authors:
 #     Opinder Kaur
@@ -10,7 +10,11 @@
 */
 
 const REGINA = [50.4452, -104.6189];
-const map = L.map('map',{minZoom: 13}).setView(REGINA, 13); //Preventing the user from zooming out too far
+const reginaBounds = L.latLngBounds(
+    [50.3500, -104.7800], // Southwest corner
+    [50.5500, -104.4500]  // Northeast corner 
+);
+const map = L.map('map',{minZoom: 13, maxBounds: reginaBounds, maxBoundsViscosity: 1.0}).setView(REGINA, 13); //Preventing the user from zooming out too far
 const potholeReportMarkers = {};
 const allPotholeMarkers = [];
 const statusLabels = {
@@ -108,7 +112,7 @@ const mapLegend = L.control({position: 'topleft'});
 mapLegend.onAdd = function (){
     const mapLegendDiv = L.DomUtil.create('div','map-legend');
     const mapLegendHTML = `
-            <span class="map-legend-title">Status Legend:</span>
+            <span class="map-legend-title">Status Legend</span>
 
             <div class="map-legend-item">
                 <img src="/static/images/marker-icon-approved-green.png"
@@ -173,8 +177,10 @@ map.on('click', function (e) {
                 .setContent(`
                   <b>Nearest Address: </b>
                     ${address}
+                    <p>
+                    </p>
                     <div style="text-align: center;" class="button">
-                        <a href='/api/report/?lat=${lat}&lon=${lon}'
+                        <a href='/api/report/?lat=${lat}&lon=${lon}&address=${encodeURIComponent(address)}'
                         target="_blank">
                         <button type="submit" 
                                 style ="width:auto; font-size:12px"> 
@@ -281,6 +287,10 @@ fetch('/api/potholes/')
                 marker.bindPopup(popupHTML);
                 // keep track of the published tickets on the map
                 potholeReportMarkers[p.ticket_number] = marker;
+                // Pans the map so that the pop fits
+                marker.on("click", function () {
+                map.panTo(marker.getLatLng());
+            });
            };
         });
         //console.log(potholeReportMarkers);
