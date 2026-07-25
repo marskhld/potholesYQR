@@ -1,7 +1,14 @@
-
-
 # Django shortcuts for loading pages, redirecting, and finding objects
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
+from .models import PotholeReport
+
+# Used to generate named URLs
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.db import transaction
+
 # Used for multi-field OR filtering in the dashboard search
 from django.db.models import Q, Count
 
@@ -36,6 +43,40 @@ from .models import (
     Photo,
     StatusHistory,
 )
+from .utils import geocode_address
+
+def map_view(request):
+    return render(request, 'reports/map.html')
+"""
+def pothole_data(request):
+    potholes = PotholeReport.objects.all().values(
+        'id', 'ticket_number', 'created_date', 'updated_date', 'latitude', 'longitude', 'address', 'description', 'severity', 'current_status', 'public_notes'
+    )
+    return JsonResponse(list(potholes), safe=False)
+"""
+# load the photos for the map, too
+def pothole_data(request):
+    data = []
+    for report in PotholeReport.objects.all():
+        photos = [
+            photo.file_path.url
+            for photo in Photo.objects.filter(report=report)
+        ]
+        data.append({
+            'id': report.id,
+            'ticket_number': report.ticket_number,
+            'created_date': report.created_date,
+            'updated_date': report.updated_date,
+            'latitude': report.latitude,
+            'longitude': report.longitude,
+            'address': report.address,
+            'description': report.description,
+            'severity': report.severity,
+            'current_status': report.current_status,
+            'public_notes': report.public_notes,
+            'photos': photos
+        })
+    return JsonResponse(data, safe=False)
 
 # Create your views here.
 def submit_report(request):
@@ -133,7 +174,6 @@ def staff_login(request):
     # If page is opened normally using GET request,
     # simply display the staff login page
     return render(request, "reports/staff_login.html")
-
 
 # Staff dashboard page
 # Staff dashboard page
@@ -248,6 +288,7 @@ def staff_dashboard(request):
         **report_counts,
     }
 
+    # Load staff_dashboard.html and pass report data to it
     return render(
         request,
         "reports/staff_dashboard.html",

@@ -12,6 +12,23 @@
    Match the Staff Report Detail header
    ========================================================== */
 
+/*
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        staff_dashboard.css
+# Description: This file controls the staff_dashboard(main) styling.
+#               
+# Authors:
+#       Daskhkumar Patel
+#       Opinder Kaur
+#       Christopher Taylor
+*/
+#staff-map {
+    height: 600px;
+    width: 100%;
+    z-index: 1;
+}
+
 body.staff-theme .header-logo {
   padding-right: 24px;
   margin-right: 8px;
@@ -94,17 +111,26 @@ body.staff-theme .header-actions {
   margin-bottom: 24px;
 }
 
+/* Added cursor and transition */
+
 .summary-card {
   min-width: 0;
   padding: 16px;
-
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-
   box-shadow: 0 4px 14px rgb(15 23 42 / 6%);
+  cursor: pointer;
+  transition: transform 0.2s;
 }
-
+/* Added hover */
+.summary-card:hover {
+  transform: translateY(-3px);
+}
+/* Added active */
+.summary-card.active {
+    border: 2px solid #00153b;
+}
 .summary-card h3 {
   margin: 0 0 8px;
 
@@ -518,11 +544,15 @@ body.staff-theme .header-actions {
   }
 }
 
+/* Fixed map overlapping header with sticky, top and z-index */
 
 @media (max-width: 720px) {
   body.staff-theme .site-header {
     padding-right: 20px;
     padding-left: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
   }
 
   body.staff-theme .header-content {

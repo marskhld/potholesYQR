@@ -1,14 +1,21 @@
+"""
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        forms.py
+# Description: This files contains code that controls forms used to submit pothole reports.
+#
+# Authors:
+#     Maria Khalid
+#     Opinder Kaur
+#     Christopher Taylor """
+
 import re
-
 from django import forms
-
 from .models import PotholeReport, Resident
-
 
 # photo upload
 class MultiplePhotoInput(forms.ClearableFileInput):
     allow_multiple_selected = True
-
 
 class MultiplePhotoField(forms.FileField):
     widget = MultiplePhotoInput()
@@ -21,7 +28,6 @@ class MultiplePhotoField(forms.FileField):
             data = [data]
 
         return data
-
 
 # resident info
 class ResidentForm(forms.ModelForm):
@@ -79,20 +85,21 @@ class ResidentForm(forms.ModelForm):
             )
         return phone_number
 
-
 # pothole info
 class PotholeReportForm(forms.ModelForm):
     photos = MultiplePhotoField(required=False)
 
     class Meta:
         model = PotholeReport
-        fields = ["address", "description"]
+        fields = ["address", "description","latitude", "longitude"]
 
         widgets = {
+            "latitude": forms.HiddenInput(),
+            "longitude": forms.HiddenInput(),
             "address": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "1234 Albert Street, Regina, SK",
+                    "placeholder": "Enter the address or click the nearest location of the pothole.",
                 }
             ),
             "description": forms.Textarea(
@@ -109,7 +116,7 @@ class PotholeReportForm(forms.ModelForm):
         }
         error_messages = {
             "address": {
-                "required": "Please enter the address or nearest location of the pothole."
+                "required": "Please enter the address or click the nearest location of the pothole."
             },
             "description": {
                 "max_length": "Description cannot exceed 500 characters."
@@ -138,16 +145,7 @@ class PotholeReportForm(forms.ModelForm):
                     "Only JPEG (.jpg, .jpeg) and PNG (.png) image files are supported."
                 )
         return photos
-
-    def clean_address(self):
-        address = self.cleaned_data.get("address")
-
-        if not address or len(address) < 5:
-            raise forms.ValidationError(
-                "Please enter a more complete address so we can accurately locate the pothole."
-            )
-        return address
-    
+   
     def clean_description(self):
         description = self.cleaned_data.get("description", "")
 
@@ -157,3 +155,13 @@ class PotholeReportForm(forms.ModelForm):
             )
 
         return description
+
+"""     
+    def clean_address(self):
+        address = self.cleaned_data.get("address")
+
+        if not address or len(address) < 5:
+            raise forms.ValidationError(
+                "Please enter a more complete address so we can accurately locate the pothole."
+            )
+        return address """

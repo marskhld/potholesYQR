@@ -1,7 +1,19 @@
-{% load static %}
+<!--
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        base.html
+# Description: This is the Django base html template for the site.
+#               
+# Authors:
+#     Maria Khalid
+#     Opinder Kaur
+#     Christopher Taylor
+-->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% load static %}
     <meta charset="UTF-8" />
     <title>{% block title %}Potholes YQR{% endblock title %}</title>
 
@@ -13,25 +25,34 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- favicon -->
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon"> 
+
     <!-- site-wide styling -->
     <link rel="stylesheet" href="{% static 'css/website.css' %}" />
 
     <!-- allows for page-specific styling -->
     {% block extra_css %}
     {% endblock extra_css %}
+    
   </head>
 
   <body class="{% block body_class %}{% endblock body_class %}">
     <header class="site-header">
       <div class="header-content">
 
-        {% block header_logo %}
-          <a href="{% url 'submit_report' %}" class="header-logo">
-            <img src="{% static 'images/header-logo.png' %}"
-                 alt="Potholes YQR"
-                 class="header-icon" />
-          </a>
-        {% endblock header_logo %}
+    {# Added block header_logo to provide a method to override header-logo.png #}
+
+    {% block header_logo %}
+        <a href="{% url 'map' %}" class="header-logo">
+        {# DONE: change to 'home' later so logo redirects to home page #}
+        <img
+            src="{% static 'images/header-logo.png' %}"
+            alt="Potholes YQR"
+            class="header-icon"
+        />
+        </a>
+    {% endblock header_logo %}
 
         <div class="header-text">
           <h1>
@@ -49,7 +70,7 @@
         <nav class="header-nav">
           {% block header_nav %}
             <a href="{% url 'submit_report' %}" class="nav-link">Report a Pothole</a>
-            <a href="#" class="nav-link">Track a Report</a> {% comment "TODO: Add map/home link here" %}{% endcomment %}
+            <a href="{% url 'map' %}" class="nav-link">Track a Report</a> {% comment "DONE: Add map/home link here" %}{% endcomment %}
             <a href="#" class="nav-link">FAQ</a> {% comment "TODO: do we want to create a FAQ page?" %}{% endcomment %}
             <a href="#" class="nav-link"><i class="fa-solid fa-phone"></i> Contact Us</a> {% comment "TODO: do we want to create this page?" %}{% endcomment %}
           {% endblock header_nav %}
