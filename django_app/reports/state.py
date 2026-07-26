@@ -40,15 +40,6 @@ class PotholeReportState(ABC):
             "cannot be closed."
         )
 
-    @property
-    def map_icon_color(self):
-        """
-        Default map-marker colour.
-        """
-
-        return "gray"
-
-
 # ==========================================================
 # NEW STATE
 #
@@ -78,11 +69,6 @@ class NewState(PotholeReportState):
     def reject(self, report):
         report._set_state("rejected")
 
-    @property
-    def map_icon_color(self):
-        return "blue"
-
-
 # ==========================================================
 # APPROVED STATE
 #
@@ -99,11 +85,6 @@ class ApprovedState(PotholeReportState):
     def pend(self, report):
         report._set_state("pending")
 
-    @property
-    def map_icon_color(self):
-        return "green"
-
-
 # ==========================================================
 # REJECTED STATE
 #
@@ -111,12 +92,7 @@ class ApprovedState(PotholeReportState):
 # ==========================================================
 
 class RejectedState(PotholeReportState):
-
-    @property
-    def map_icon_color(self):
-        return "red"
-
-
+    pass
 # ==========================================================
 # PENDING STATE
 #
@@ -128,11 +104,6 @@ class PendingState(PotholeReportState):
 
     def start_work(self, report):
         report._set_state("in_progress")
-
-    @property
-    def map_icon_color(self):
-        return "yellow"
-
 
 # ==========================================================
 # IN PROGRESS STATE
@@ -150,11 +121,6 @@ class InProgressState(PotholeReportState):
     def close(self, report):
         report._set_state("closed")
 
-    @property
-    def map_icon_color(self):
-        return "orange"
-
-
 # ==========================================================
 # CLOSED STATE
 #
@@ -162,11 +128,7 @@ class InProgressState(PotholeReportState):
 # ==========================================================
 
 class ClosedState(PotholeReportState):
-
-    @property
-    def map_icon_color(self):
-        return "dark-grey"
-
+    pass
 
 # Create one reusable object for each concrete State.
 STATE_MAP = {
