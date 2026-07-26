@@ -228,14 +228,6 @@ class PotholeReport(models.Model):
 
         return get_state(self.current_status)
 
-    @property
-    def icon_color(self):
-        """
-        Ask the current State object for the map-marker colour.
-        """
-
-        return self.state.map_icon_color
-
     def _set_state(self, new_status):
         """
         Internal helper used by concrete State classes.
