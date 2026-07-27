@@ -41,6 +41,7 @@ from .models import (
     Staff,
     PotholeReport,
     Photo,
+    Notification,     #included for storing email notification sent to Resident for Report confirmation, Status change.
     StatusHistory,
 )
 from .utils import geocode_address
@@ -114,16 +115,31 @@ def submit_report(request):
                     for photo in request.FILES.getlist('photos')[:5]:
                         Photo.objects.create(report=report, file_path=photo)
 
+                email_message = (
+                                    "Thank you for reporting the pothole. "
+                                    "Your report has been received and is being processed. "
+                                    f"Your ticket number is {report.ticket_number}."
+                                )
+                    
+
                 send_mail(
-                    subject='Pothole Report Confirmation',
-                    message=f'Thank you for reporting the pothole. Your report has been received and is being processed. Your ticket number is {report.ticket_number}.',
-                    from_email='noreply@potholesyqr.com',
-                    recipient_list=[resident.email],
-                    fail_silently=False, # for debugging, will raise an error if email fails to send
+                            subject="Pothole Report Confirmation",
+                            message=email_message,
+                            from_email="noreply@potholesyqr.com",
+                            recipient_list=[resident.email],
+                            fail_silently=False,
+                        )
+
+                Notification.objects.create(
+                    report=report,
+                    resident=resident,
+                    message=email_message,
                 )
-                # TODO: create email notification entry in the Notification model for record-keeping
-                return redirect('report_confirmation', ticket=report.ticket_number)  # Redirect to a success page after submission
-            
+
+                return redirect(
+                    "report_confirmation",
+                    ticket=report.ticket_number,
+                )
     else:
         resident_form = ResidentForm()
         report_form = PotholeReportForm()
@@ -293,6 +309,73 @@ def staff_dashboard(request):
         request,
         "reports/staff_dashboard.html",
         context,
+    )
+# the Below Function will sends an email whenever staff changes a pothole report's Status, than saves the copy t othe Notification in database. 
+def send_status_notification(
+    report,
+    old_status,
+    new_status,
+):
+    status_labels = dict(
+        PotholeReport.STATUS_CHOICES
+    )
+
+    old_status_label = status_labels.get(
+        old_status,
+        old_status,
+    )
+
+    new_status_label = status_labels.get(
+        new_status,
+        new_status,
+    )
+
+    subject = (
+        f"Potholes YQR Status Update - "
+        f"{report.ticket_number}"
+    )
+
+    message = (
+        f"Hello {report.resident.name},\n\n"
+        "The status of your pothole report has been updated.\n\n"
+        f"Ticket number: {report.ticket_number}\n"
+        f"Address: {report.address}\n"
+        f"Previous status: {old_status_label}\n"
+        f"New status: {new_status_label}\n"
+    )
+
+    if report.public_notes:                              # Condition check if there are any Public notes entered by staff to add in email .
+        message += (
+            "\nUpdate from staff:\n"
+            f"{report.public_notes}\n"
+        )
+
+    if new_status == "closed":
+           message += (
+        "\nThis report has now been closed. "
+        "No further status updates are expected.\n\n"
+        "Thank you for helping improve the city, \n\n"
+        "Potholes YQR"
+    )
+    else:
+        message += (
+            "\nPlease keep your ticket number for tracking.\n\n"
+            "Thank you,\n"
+            "Potholes YQR"
+        )
+
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email="noreply@potholesyqr.com",
+        recipient_list=[report.resident.email],
+        fail_silently=False,
+    )
+
+    Notification.objects.create(
+        report=report,
+        resident=report.resident,
+        message=message,
     )
 
 # Staff report detail page
@@ -677,6 +760,14 @@ def staff_report_detail(request, ticket):
                                 staff_notes=new_staff_notes,
                                 public_notes=new_public_notes,
                             )
+                            if old_status != new_status:          #Changing Status Sends One email. and the content is saved under Notification 
+                                transaction.on_commit(
+                                    lambda:send_status_notification(          #Using lambda is YQR-431B7BD9 that on_commit function to call later and not immediately.
+                                        report,
+                                        old_status,
+                                        new_status,
+                                    )
+                                )
 
                     except ValueError as error:
                         update_error = str(error)
