@@ -48,6 +48,10 @@ class ResidentForm(forms.ModelForm):
         }
 
         error_messages = {
+            "name": {
+                "required": "Resident name is required.",
+                "invalid": "Please enter your name. (for example, John Smith).",
+            },
             "email": {
                 "required": "An email address is required so we can send you your pothole report confirmation and ticket number.",
                 "invalid": "Please enter a valid email address (for example, name@example.com).",
@@ -61,7 +65,7 @@ class ResidentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):  # for error messaging
         super().__init__(*args, **kwargs)
 
-        self.fields["name"].required = False
+        self.fields["name"].required = True
         self.fields["email"].required = True
         self.fields["phone_number"].required = True
 
@@ -99,7 +103,7 @@ class PotholeReportForm(forms.ModelForm):
             "address": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter the address or click the nearest location of the pothole.",
+                    "placeholder": "Enter and select an address from the suggestions or click the nearest location on the map.",
                 }
             ),
             "description": forms.Textarea(
@@ -116,7 +120,8 @@ class PotholeReportForm(forms.ModelForm):
         }
         error_messages = {
             "address": {
-                "required": "Please enter the address or click the nearest location of the pothole."
+                "required": "Please enter and select an address from the suggestions or click the nearest location on the map.",
+                "invalid": "Please enter and select an address from the suggestions or click the nearest location on the map.",
             },
             "description": {
                 "max_length": "Description cannot exceed 500 characters."
