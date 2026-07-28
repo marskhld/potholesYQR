@@ -137,7 +137,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "static"
 
-MEDIA_URL = '/media/'
+if DEBUG:
+    MEDIA_URL = "/media/"
+else:
+    MEDIA_URL = "/api/media/"
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend" # for development purposes only

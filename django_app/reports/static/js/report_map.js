@@ -91,7 +91,7 @@ addressField.addEventListener("input", () => {
  
     clearTimeout(lookupTimer);
     suggestionsBox.innerHTML = "";
-    lookupTimer = setTimeout(searchAddresses, 1000);
+    lookupTimer = setTimeout(searchAddresses, 500);
  
 });
 

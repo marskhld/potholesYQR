@@ -224,7 +224,7 @@ fetch('/api/potholes/')
 
             // Build the popup HTML
             const popupHTML = `
-                <b> <a href="/staff/report/${p.ticket_number}/" 
+                <b> <a href="/api/staff/report/${p.ticket_number}/" 
                     class="ticket-link"
                     style="color:#1976d2; text-decoration:underline;">
                     ${p.ticket_number}

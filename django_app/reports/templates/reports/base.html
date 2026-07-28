@@ -44,7 +44,7 @@
     {# Added block header_logo to provide a method to override header-logo.png #}
 
     {% block header_logo %}
-        <a href="{% url 'map' %}" class="header-logo">
+        <a href="{% url 'home' %}" class="header-logo">
         {# DONE: change to 'home' later so logo redirects to home page #}
         <img
             src="{% static 'images/header-logo.png' %}"
@@ -70,7 +70,7 @@
         <nav class="header-nav">
           {% block header_nav %}
             <a href="{% url 'submit_report' %}" class="nav-link">Report a Pothole</a>
-            <a href="{% url 'map' %}" class="nav-link">Track a Report</a> {% comment "DONE: Add map/home link here" %}{% endcomment %}
+            <a href="{% url 'home' %}" class="nav-link">Track a Report</a> {% comment "DONE: Add map/home link here" %}{% endcomment %}
             <a href="#" class="nav-link">FAQ</a> {% comment "TODO: do we want to create a FAQ page?" %}{% endcomment %}
             <a href="#" class="nav-link"><i class="fa-solid fa-phone"></i> Contact Us</a> {% comment "TODO: do we want to create this page?" %}{% endcomment %}
           {% endblock header_nav %}

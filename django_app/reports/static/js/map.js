@@ -328,6 +328,11 @@ document.addEventListener("click", function (e) {
     if (e.target.id === "pothole-Search-Btn") {
         const ticketNumber =
             document.getElementById("potholeSearch").value.trim();
+            //if nothing entered, alert user to enter a ticket number
+        if (!ticketNumber) {
+            alert("Please enter a Pothole Report Ticket #.");
+            return;
+        }
         const marker = potholeReportMarkers[ticketNumber];
         if (marker) {
             // Set the map view to the selected pothole
@@ -339,6 +344,13 @@ document.addEventListener("click", function (e) {
         }
     }
 });
+
+document.getElementById("potholeSearch")
+    .addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            document.getElementById("pothole-Search-Btn").click();
+        }
+    });
 
 // add function to filter markers based on Severity
 function filterMarkers() {
