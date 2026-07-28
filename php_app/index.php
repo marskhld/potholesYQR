@@ -1,4 +1,4 @@
 <?php
-echo "<br>";
-echo "We got this guys ;)!";
+header("Location: /api/");
+exit;
 ?>
