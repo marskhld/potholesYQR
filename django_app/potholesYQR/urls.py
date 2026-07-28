@@ -38,7 +38,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     #Map and API
-    path('map/', views.map_view, name='map'),
+    path('map/', views.map_view, name='home'),
     path('api/potholes/', views.pothole_data, name='pothole_data'),
 
     #Reports app routes
