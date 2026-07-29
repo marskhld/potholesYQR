@@ -41,11 +41,7 @@ Help us keep our roads safe by reporting potholes in your area.
 {# main body #}
 
 <form method="post" enctype="multipart/form-data" novalidate>
-
-    <p class="form-note">
-        Fields marked with * are required.
-    <p>
-
+        <p class="form-note">Fields marked with * are required.</p>
         {% csrf_token %}
         {% if resident_form.errors or report_form.errors %}
     <div class="error-summary">Please correct the errors below.</div>
