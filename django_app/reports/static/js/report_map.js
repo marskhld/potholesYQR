@@ -181,5 +181,6 @@ document.getElementById("reset-map-btn")
 
         // Reset map view
         map.setView(REGINA, 11);
-
+        //loading the page without query in url
+        window.location.href = "/api/report/";
     });
