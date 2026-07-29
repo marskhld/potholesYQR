@@ -55,7 +55,8 @@ Help us keep our roads safe by reporting potholes in your area.
 
     <div class="form-group">
         <label for="{{ resident_form.name.id_for_label }}">
-            Name <span class="required">*</span></label>
+                Name <span class="required">*</span>
+            </label>
         {{ resident_form.name }} {% if resident_form.name.errors %}
         <div class="error-message">{{ resident_form.name.errors.0 }}</div>
         {% endif %}
@@ -108,7 +109,7 @@ Help us keep our roads safe by reporting potholes in your area.
     {{ report_form.longitude }}
 
     <div class="form-group">
-        <label for="{{ report_form.description.id_for_label }}">Description</label>
+    <label for="{{ report_form.description.id_for_label }}">Description<span class="required">*</span></label>
         <p class="help-text">
             Provide any helpful details such as pothole size, nearby landmarks, or
             potential hazards.
