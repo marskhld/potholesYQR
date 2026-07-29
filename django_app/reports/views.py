@@ -1,12 +1,24 @@
+# Course:      CS 476
+# Project:     PotholesYQR
+# File:        reports/views.py
+# Description: Processes requests like submitting a report, logging in staff, 
+#              updating status, loading map data using forms.py and urls.py
+# 
+# Authors:
+#     Maria Khalid
+#     Dakshkumar Patel
+#     Opinder Kaur
+#     Christopher Taylor
+
 # Django shortcuts for loading pages, redirecting, and finding objects
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from .models import PotholeReport
 
-
 # Used to generate named URLs
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.db import transaction
 
 # Used for multi-field OR filtering in the dashboard search
@@ -16,7 +28,7 @@ from django.db.models import Q, Count
 from django.urls import reverse
 
 # Used to send resident confirmation emails
-# from django.core.mail import send_mail
+from django.core.mail import send_mail
 
 # Used to validate staff-edited email addresses
 from django.core.exceptions import ValidationError
@@ -34,17 +46,27 @@ from django.contrib.auth.decorators import login_required
 # Project utility and forms
 from .utils import geocode_address
 from .forms import ResidentForm, PotholeReportForm
-from .observers import notify_report_observers     #added observers.py DP 
 
 # Database models used by resident and staff pages
 from .models import (
-    Resident, 
+    Resident,
     Staff,
     PotholeReport,
     Photo,
+    Notification,     #included for storing email notification sent to Resident for Report confirmation, Status change.
     StatusHistory,
 )
 from .utils import geocode_address
+
+from .strategy import (
+    SearchCriteria,
+    StrategyContext,
+    TicketFilterStrategy,
+    StatusFilterStrategy,
+    SeverityFilterStrategy,
+    DateRangeFilterStrategy,
+    StatusSeverityTimeStrategy,
+)
 
 def map_view(request):
     return render(request, 'reports/map.html')
@@ -56,7 +78,7 @@ def pothole_data(request):
     return JsonResponse(list(potholes), safe=False)
 """
 # load the photos for the map, too
-def pothole_data(request):
+""" def pothole_data(request):
     data = []
     for report in PotholeReport.objects.all():
         photos = [
@@ -78,8 +100,73 @@ def pothole_data(request):
             'photos': photos
         })
     return JsonResponse(data, safe=False)
-
+ """
 # Create your views here.
+def pothole_data(request):
+    # Read filters from URL parameters
+    ticket = request.GET.get("ticket", "").strip()
+    status = request.GET.get("status", "").strip()
+    severity = request.GET.get("severity", "").strip()
+    start_date = request.GET.get("start_date", "").strip()
+    end_date = request.GET.get("end_date", "").strip()
+
+ # Build SearchCriteria object
+    criteria = SearchCriteria(
+        ticket=ticket or None,
+        status=status or None,
+        severity=severity or None,
+        start_date=start_date or None,
+        end_date=end_date or None,
+    )
+
+    # Choose strategy based on which filters are used
+    if criteria.ticket:
+        strategy = TicketFilterStrategy()
+
+    elif criteria.status and criteria.severity and criteria.start_date and criteria.end_date:
+        strategy = StatusSeverityTimeStrategy()
+
+    elif criteria.status:
+        strategy = StatusFilterStrategy()
+
+    elif criteria.severity:
+        strategy = SeverityFilterStrategy()
+
+    elif criteria.start_date and criteria.end_date:
+        strategy = DateRangeFilterStrategy()
+
+    else:
+        # No filters → return all reports
+        strategy = None
+
+    reports = PotholeReport.objects.all()
+
+    # Apply strategy if selected
+    if strategy:
+        context = StrategyContext(strategy)
+        reports = context.execute(reports, criteria)
+
+    # Build JSON response
+    data = []
+    for report in reports:
+        photos = [photo.file_path.url for photo in Photo.objects.filter(report=report)]
+        data.append({
+            'id': report.id,
+            'ticket_number': report.ticket_number,
+            'created_date': report.created_date,
+            'updated_date': report.updated_date,
+            'latitude': report.latitude,
+            'longitude': report.longitude,
+            'address': report.address,
+            'description': report.description,
+            'severity': report.severity,
+            'current_status': report.current_status,
+            'public_notes': report.public_notes,
+            'photos': photos,
+        })
+
+    return JsonResponse(data, safe=False)
+
 def submit_report(request):
     if request.method == 'POST':
         resident_form = ResidentForm(request.POST)
@@ -122,32 +209,24 @@ def submit_report(request):
                                 )
                     
 
-                # send_mail(
-                #             subject="Pothole Report Confirmation",
-                #             message=email_message,
-                #             from_email="noreply@potholesyqr.com",
-                #             recipient_list=[resident.email],
-                #             fail_silently=False,
-                #         )
+                send_mail(
+                            subject="Pothole Report Confirmation",
+                            message=email_message,
+                            from_email="noreply@potholesyqr.com",
+                            recipient_list=[resident.email],
+                            fail_silently=False,
+                        )
 
-                # Notification.objects.create(
-                #     report=report,
-                #     resident=resident,
-                #     message=email_message,
-                # )
-
-            transaction.on_commit(
-                lambda: notify_report_observers(
+                Notification.objects.create(
                     report=report,
-                    subject="Pothole Report Confirmation",
+                    resident=resident,
                     message=email_message,
                 )
-            )    
 
-            return redirect(
-                "report_confirmation",
-                ticket=report.ticket_number,
-            )
+                return redirect(
+                    "report_confirmation",
+                    ticket=report.ticket_number,
+                )
     else:
         resident_form = ResidentForm()
         report_form = PotholeReportForm()
@@ -352,19 +431,19 @@ def send_status_notification(
         f"New status: {new_status_label}\n"
     )
 
-    if report.public_notes:
+    if report.public_notes:                              # Condition check if there are any Public notes entered by staff to add in email .
         message += (
             "\nUpdate from staff:\n"
             f"{report.public_notes}\n"
         )
 
     if new_status == "closed":
-        message += (
-            "\nThis report has now been closed. "
-            "No further status updates are expected.\n\n"
-            "Thank you for helping improve the city,\n\n"
-            "Potholes YQR"
-        )
+           message += (
+        "\nThis report has now been closed. "
+        "No further status updates are expected.\n\n"
+        "Thank you for helping improve the city, \n\n"
+        "Potholes YQR"
+    )
     else:
         message += (
             "\nPlease keep your ticket number for tracking.\n\n"
@@ -372,14 +451,20 @@ def send_status_notification(
             "Potholes YQR"
         )
 
-    # Observer Pattern:
-    # Notify the email and database-record observers.
-    notify_report_observers(
-        report=report,
+    send_mail(
         subject=subject,
         message=message,
+        from_email="noreply@potholesyqr.com",
+        recipient_list=[report.resident.email],
+        fail_silently=False,
     )
-    
+
+    Notification.objects.create(
+        report=report,
+        resident=report.resident,
+        message=message,
+    )
+
 # Staff report detail page
 # Authorized staff can review and update report information
 @login_required(login_url="staff_login")

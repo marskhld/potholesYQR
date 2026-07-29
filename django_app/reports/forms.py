@@ -103,7 +103,7 @@ class PotholeReportForm(forms.ModelForm):
             "address": forms.TextInput(
                 attrs={
                     "class": "form-control",
-                    "placeholder": "Enter and select an address from the suggestions or click the nearest location on the map.",
+                    "placeholder": "Enter and select an address from the suggestions or click the location on the map.",
                 }
             ),
             "description": forms.Textarea(
@@ -120,8 +120,8 @@ class PotholeReportForm(forms.ModelForm):
         }
         error_messages = {
             "address": {
-                "required": "Please enter and select an address from the suggestions or click the nearest location on the map.",
-                "invalid": "Please enter and select an address from the suggestions or click the nearest location on the map.",
+                "required": "Please enter and select an address from the suggestions or click the location on the map.",
+                "invalid": "Please enter and select an address from the suggestions or click the location on the map.",
             },
             "description": {
                 "max_length": "Description cannot exceed 500 characters."
