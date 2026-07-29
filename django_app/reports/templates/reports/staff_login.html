@@ -1,16 +1,12 @@
 {% extends "reports/base.html" %}
 {% load static %}
-
 {% block title %}
   Staff Login | Potholes YQR
 {% endblock title %}
-
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/staff_login.css' %}">
 {% endblock extra_css %}
-
 {% block body_class %}staff-theme{% endblock body_class %}
-
 {# header stuff #}
 {% block header_logo %}
   <a href="{% url 'staff_dashboard' %}" class="header-logo">
@@ -19,73 +15,52 @@
          class="header-icon" />
   </a>
 {% endblock header_logo %}
-
 {% block header_title %}
   Staff Login
 {% endblock header_title %}
-
 {% block header_subtitle %}Manage submitted pothole reports and monitor their progress.{% endblock header_subtitle %}
-
 {% block header_nav %}{# empty #}{% endblock header_nav %}
-
 {% block header_actions %}{# empty #}{% endblock header_actions %}
-
 {% block content %}
-
   {# Outer container used to center the login card on the page #}
   <div class="staff-login-container">
     <div class="staff-login-card">
-
       <h2>Staff Portal</h2>
-
       <p class="login-intro">
         Sign in to access submitted pothole reports, validate report details,
         update statuses, and manage resolution notes.
       </p>
-
       {# If login fails, Django will send an error message here #}
       {% if error %}
         <div class="error-summary">{{ error }}</div>
       {% endif %}
-
       {# Login form sends username and password to staff_login view #}
-      <form method="post">
-
+      <form method="post" novalidate>
         {# CSRF token protects the form from unsafe requests #}
         {% csrf_token %}
-
         {# Username input field #}
         <div class="form-group">
           <label for="username">Username</label>
-
           <input type="text"
                  id="username"
                  name="username"
                  required
                  placeholder="Enter staff username">
         </div>
-
         {# Password input field #}
         <div class="form-group">
           <label for="password">Password</label>
-
           <input type="password"
                  id="password"
                  name="password"
                  required
                  placeholder="Enter password">
         </div>
-
         {# Submit button for login #}
         <button type="submit" class="btn-primary">Login</button>
-
       </form>
-
       {# Small warning/note for users #}
       <p class="staff-note">Authorized staff only. Reports must be reviewed before approval or rejection.</p>
-
     </div>
-
   </div>
-
 {% endblock content %}
