@@ -124,7 +124,8 @@ class PotholeReportForm(forms.ModelForm):
                 "invalid": "Please enter and select an address from the suggestions or click the location on the map.",
             },
             "description": {
-                "max_length": "Description cannot exceed 500 characters."
+                "max_length": "Description cannot exceed 500 characters.",
+                "required": "Please describe the pothole."
             },
         }
 
@@ -132,7 +133,7 @@ class PotholeReportForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields["address"].required = True
-        self.fields["description"].required = False
+        self.fields["description"].required = True
 
         for field in self.fields.values():
             field.widget.attrs["class"] = "form-control"
