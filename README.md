@@ -56,9 +56,9 @@ We have used the Django Model-View-Template (MVT) which is the Django version of
 
 We built this project using VS Code and pushed our changes to Github. Once we were satisfied with the code we pulled the repository onto our production web server.
 
-The website can be reached at http://student01.cs.uregina.ca/api while connected to the University of Regina's network. Off-campus access requires a [VPN connection](https://www.uregina.ca/is/tech-notes/technote569.html).
+The website can be reached at http://www.student01.cs.uregina.ca/api while connected to the University of Regina's network. Off-campus access requires a [VPN connection](https://www.uregina.ca/is/tech-notes/technote569.html).
 
-The Staff Login is accessed at http://student01.cs.uregina.ca/api/staff/login/ (credentials will be provided to the instructor) and once logged in, the Staff Dashboard is accessed at http://student01.cs.uregina.ca/api/staff/dashboard.
+The Staff Login is accessed at http://www.student01.cs.uregina.ca/api/staff/login/ (credentials will be provided to the instructor) and once logged in, the Staff Dashboard is accessed at http://www.student01.cs.uregina.ca/api/staff/dashboard.
 
 ## Team Members
 
